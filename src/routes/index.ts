@@ -1,20 +1,18 @@
 import { Router } from 'express';
-import userRoutes from './user.routes';
-// Futuro: import habitRoutes from './habit.routes';
-// Futuro: import routineRoutes from './routine.routes';
-// Futuro: import exerciseRoutes from './exercise.routes';
-// Futuro: import energyLogRoutes from './energyLog.routes';
-// Futuro: import achievementRoutes from './achievement.routes';
-// Futuro: import reportRoutes from './report.routes';
+import usuariosRoutes from './usuarios.routes';
+import habitosRoutes from './habitos.routes';
+import registrosDiariosRoutes from './registrosDiarios.routes';
+import entrenamientosRoutes from './entrenamientos.routes';
+import logrosRoutes from './logros.routes';
+import reportesRoutes from './reportes.routes';
 
 const router = Router();
 
-router.use('/users', userRoutes);
-// router.use('/habits', habitRoutes);
-// router.use('/routines', routineRoutes);
-// router.use('/exercises', exerciseRoutes);
-// router.use('/energy-logs', energyLogRoutes);
-// router.use('/achievements', achievementRoutes);
-// router.use('/reports', reportRoutes);
+router.use('/api/usuarios', usuariosRoutes);
+router.use('/api/habitos', habitosRoutes);
+router.use('/api/registros-diarios', registrosDiariosRoutes);
+router.use('/api/entrenamientos', entrenamientosRoutes);
+router.use('/api/logros', logrosRoutes);
+router.use('/api/reportes', reportesRoutes);
 
 export default router;

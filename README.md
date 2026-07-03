@@ -99,3 +99,5 @@ Ninguna de las aplicaciones anteriores combina en un solo lugar el seguimiento d
 > | **Seguridad de datos sensibles** | La app maneja datos personales de salud (energía, hábitos, bienestar mental), lo cual requiere especial cuidado en su almacenamiento y acceso. |
 
 ---
+
+[Ir al Diseño Inicial de Base de Datos](designBdNosql.md)
