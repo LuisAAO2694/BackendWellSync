@@ -99,3 +99,50 @@ Ninguna de las aplicaciones anteriores combina en un solo lugar el seguimiento d
 > | **Seguridad de datos sensibles** | La app maneja datos personales de salud (energía, hábitos, bienestar mental), lo cual requiere especial cuidado en su almacenamiento y acceso. |
 
 ---
+
+## Instalación y Ejecución
+
+### Requisitos
+
+- Node.js 20+
+- [pnpm](https://pnpm.io/) `10.29.3` (`npm i -g pnpm` si no lo tienes)
+
+### Pasos
+
+1. Clonar el repositorio e instalar dependencias:
+
+    ```bash
+    pnpm install
+    ```
+
+2. Crear el archivo `.env` a partir de `.env.example`:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+3. Levantar el servidor en modo desarrollo (con recarga automática):
+
+    ```bash
+    pnpm dev
+    ```
+
+    El servidor queda disponible en `http://localhost:4000` (puerto configurable con `PORT` en `.env`).
+
+### Scripts disponibles
+
+| Script | Descripción |
+|---|---|
+| `pnpm dev` | Levanta el servidor en desarrollo con recarga automática (nodemon). |
+| `pnpm build` | Compila el proyecto TypeScript a `dist/`. |
+| `pnpm build:clean` | Limpia `dist/` y vuelve a compilar desde cero. |
+| `pnpm start` | Corre la build compilada (`dist/`). Requiere ejecutar `pnpm build` antes. |
+| `pnpm test` | Corre los tests con Jest. |
+| `pnpm lint` | Revisa el código con ESLint. |
+| `pnpm lint:fix` | Corrige automáticamente los problemas de lint que se puedan resolver solos. |
+| `pnpm format` | Formatea el código con Prettier. |
+| `pnpm format:check` | Verifica el formato sin modificar archivos. |
+
+---
+
+[Ir al Diseño Inicial de Base de Datos](designBdNosql.md)

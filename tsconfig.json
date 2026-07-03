@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "target": "esnext",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "strict": true,
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "esModuleInterop": true,
+        "types": ["jest", "node"]
+    },
+
+    "include": ["./src/**/*.ts"],
+    "exclude": ["node_modules", "./src/**/*.sepc.ts"]
+}
