@@ -6,13 +6,14 @@ import {
     updateEntrenamiento,
     deleteEntrenamiento,
 } from '../controllers/entrenamientos.controller';
+import { validateCreateEntrenamiento, validateUpdateEntrenamiento } from '../middlewares/validators/entrenamiento.validator';
 
 const router = Router();
 
 router.get('/', getAllEntrenamientos);
 router.get('/:id', getEntrenamientoById);
-router.post('/', createEntrenamiento);
-router.put('/:id', updateEntrenamiento);
+router.post('/', validateCreateEntrenamiento, createEntrenamiento);
+router.put('/:id', validateUpdateEntrenamiento, updateEntrenamiento);
 router.delete('/:id', deleteEntrenamiento);
 
 export default router;

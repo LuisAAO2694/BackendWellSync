@@ -1,21 +1,74 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { entrenamientoService } from '../services/entrenamiento.service';
+import { HttpStatus } from '../types/http-status';
+import { AppError } from '../utils/utils';
 
-export function getAllEntrenamientos(req: Request, res: Response) {
-    res.json({ message: 'Endpoint entrenamientos works', endpoint: 'GET /api/entrenamientos' });
+//Este es solo mi controlador recibir las peticiones HTTP que vienen de los entrenamientos
+
+//Obtengo todos los entrenamientos
+export async function getAllEntrenamientos(req: Request, res: Response, next: NextFunction) {
+    try {
+        const entrenamientos = await entrenamientoService.getAll();
+        res.json(entrenamientos);
+    } catch (e) {
+        next(e);
+    }
 }
 
-export function getEntrenamientoById(req: Request, res: Response) {
-    res.json({ message: 'Endpoint works', endpoint: `GET /api/entrenamientos/${req.params.id}` });
+//Obtengo un entrenamietno por su id
+export async function getEntrenamientoById(req: Request, res: Response, next: NextFunction) {
+    try {
+        const {id} = req.params;
+        const entrenamiento = await entrenamientoService.getById(id);
+
+        if (!entrenamiento) {
+            return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));
+        }
+
+        res.json(entrenamiento);
+    } catch (e) {
+        next(e);
+    }
 }
 
-export function createEntrenamiento(req: Request, res: Response) {
-    res.json({ message: 'Endpoint works', endpoint: 'POST /api/entrenamientos' });
+//Creo un nuevo entrenamiento
+export async function createEntrenamiento(req: Request, res: Response, next: NextFunction) {
+    try {
+        const entrenamiento = await entrenamientoService.create(req.body);
+        res.status(HttpStatus.SUCCESS).json(entrenamiento);
+    } catch (e) {
+        next(e);
+    }
 }
 
-export function updateEntrenamiento(req: Request, res: Response) {
-    res.json({ message: 'Endpoint works', endpoint: `PUT /api/entrenamientos/${req.params.id}` });
+//Actualizo un entrenamiento que ya existe
+export async function updateEntrenamiento(req: Request, res: Response, next: NextFunction) {
+    try {
+        const {id} = req.params;
+        const entrenamiento = await entrenamientoService.update(id, req.body);
+
+        if (!entrenamiento) {
+            return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));
+        }
+
+        res.json(entrenamiento);
+    } catch (e) {
+        next(e);
+    }
 }
 
-export function deleteEntrenamiento(req: Request, res: Response) {
-    res.json({ message: 'Endpoint works', endpoint: `DELETE /api/entrenamientos/${req.params.id}` });
+//Elimino un entrenamiento por su id
+export async function deleteEntrenamiento(req: Request, res: Response, next: NextFunction) {
+    try {
+        const {id} = req.params;
+        const entrenamiento = await entrenamientoService.delete(id);
+
+        if (!entrenamiento) {
+            return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));
+        }
+
+        res.json({ message: 'Entrenamiento eliminado correctamente' });
+    } catch (e) {
+        next(e);
+    }
 }
