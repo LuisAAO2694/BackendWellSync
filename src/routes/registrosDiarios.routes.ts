@@ -6,13 +6,17 @@ import {
     updateRegistroDiario,
     deleteRegistroDiario,
 } from '../controllers/registrosDiarios.controller';
+import {
+    validateCreateRegistroDiario,
+    validateUpdateRegistroDiario,
+} from '../middlewares/validators/registroDiario.validator';
 
 const router = Router();
 
 router.get('/', getAllRegistrosDiarios);
 router.get('/:id', getRegistroDiarioById);
-router.post('/', createRegistroDiario);
-router.put('/:id', updateRegistroDiario);
+router.post('/', validateCreateRegistroDiario, createRegistroDiario);
+router.put('/:id', validateUpdateRegistroDiario, updateRegistroDiario);
 router.delete('/:id', deleteRegistroDiario);
 
 export default router;

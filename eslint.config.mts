@@ -7,7 +7,7 @@ import prettier from 'eslint-config-prettier';
 
 export default defineConfig([
     {
-        ignores: ['dist/**', 'node_modules/**', 'jest.config.js'],
+        ignores: ['dist/**', 'node_modules/**', 'jest.config.js', 'build.js'],
     },
 
     {
