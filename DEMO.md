@@ -1,19 +1,5 @@
-# WellSync — Guion para la demo de entrega
-
-Script paso a paso para grabar la demo del CRUD funcionando. Cubre los 6 requisitos de la entrega:
-
-- Conexión a base de datos
-- Modelos de datos
-- CRUD básico
-- APIs REST
-- Validaciones básicas
-- Manejo de errores
-
----
-
-## 0. Antes de grabar
-
-Levanta el servidor en tu terminal:
+# WellSync — Demo de CRUD funcionando
+## 0. Levanta el servidor en tu terminal
 
 ```bash
 pnpm dev
@@ -30,7 +16,7 @@ app is running in http://localhost:4000
 
 Ten Postman abierto (extensión de VS Code o app de escritorio).
 
-**ID de usuario real que vas a usar** (ya existe en la BD, cópialo):
+**ID de usuario real que vas a usar** (ya existe en la BD):
 
 ```
 6a51aac731cc95dd9ad461de
@@ -242,9 +228,3 @@ http://localhost:4000/api/logros/PEGA_AQUI_EL_ID
 - Send. Esperado: `200`.
 
 ---
-
-## Tips para grabar
-
-- Narra en voz alta qué requisito estás mostrando en cada paso (ej. "aquí valido que el campo sea obligatorio...", "aquí manejo el error 404 sin que el servidor truene...").
-- No olvides cambiar el dropdown de Body a **JSON** cada vez que mandes un `POST`/`PUT` — si se queda en "Text" o "JavaScript", el body llega vacío y da error 400 aunque los datos estén bien escritos.
-- Al terminar, si quieres dejar la BD limpia, borra cualquier documento de prueba que no hayas eliminado durante la demo (`DELETE /api/reportes/:id`, `/api/logros/:id`, etc.).
