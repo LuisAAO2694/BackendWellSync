@@ -27,7 +27,10 @@ export function validateCreateHabito(req: Request, res: Response, next: NextFunc
         errors.push('La meta diaria es obligatoria');
     }
 
-    if (horarioRecordatorio !== undefined && (typeof horarioRecordatorio !== 'string' || horarioRecordatorio.trim().length === 0)) {
+    if (
+        horarioRecordatorio !== undefined &&
+        (typeof horarioRecordatorio !== 'string' || horarioRecordatorio.trim().length === 0)
+    ) {
         errors.push('El horario de recordatorio no es valido');
     }
 
@@ -62,7 +65,10 @@ export function validateUpdateHabito(req: Request, res: Response, next: NextFunc
         errors.push('La meta diaria no puede estar vacia');
     }
 
-    if (horarioRecordatorio !== undefined && (typeof horarioRecordatorio !== 'string' || horarioRecordatorio.trim().length === 0)) {
+    if (
+        horarioRecordatorio !== undefined &&
+        (typeof horarioRecordatorio !== 'string' || horarioRecordatorio.trim().length === 0)
+    ) {
         errors.push('El horario de recordatorio no es valido');
     }
 

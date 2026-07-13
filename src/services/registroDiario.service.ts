@@ -1,7 +1,6 @@
-import { RegistroDiario, IRegistroDiario } from "../models/registroDiario.model";
+import { RegistroDiario, IRegistroDiario } from '../models/registroDiario.model';
 
 export const registroDiarioService = {
-
     //Obtengo todos los registros diarios
     async getAll(): Promise<IRegistroDiario[]> {
         return await RegistroDiario.find();

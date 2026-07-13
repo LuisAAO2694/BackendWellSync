@@ -12,7 +12,7 @@ const router = Router();
 
 router.get('/', getAllUsuarios);
 router.get('/:id', getUsuarioById);
-router.post('/', validateCreateUsuario ,createUsuario);
+router.post('/', validateCreateUsuario, createUsuario);
 router.put('/:id', validateUpdateUsuario, updateUsuario);
 router.delete('/:id', deleteUsuario);
 

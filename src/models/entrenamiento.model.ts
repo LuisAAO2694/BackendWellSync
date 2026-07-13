@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types } from "mongoose";
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 //Esta de aqui es mi interfaz que define la structure de un ejercicio dentro de un entrenamiento
 //Lo del SubDoc
@@ -23,38 +23,41 @@ export interface IEntrenamiento extends Document {
 }
 
 //
-const ejercicioSchema = new Schema<IEjercicio>({
-    exerciseId: {
-        type: String,
-        required: [true, 'El exerciseId es obligatorio'],
+const ejercicioSchema = new Schema<IEjercicio>(
+    {
+        exerciseId: {
+            type: String,
+            required: [true, 'El exerciseId es obligatorio'],
+        },
+        nombre: {
+            type: String,
+            required: [true, 'El nombre del ejercicio es obligatorio'],
+        },
+        series: {
+            type: Number,
+            required: [true, 'Las series son obligatorias'],
+            min: [1, 'Debe haber al menos 1 serie'],
+        },
+        repeticiones: {
+            type: Number,
+            required: [true, 'Las repeticiones son obligatorias'],
+            min: [1, 'Debe haber al menos 1 repetición'],
+        },
+        peso: {
+            type: Number,
+            default: 0,
+            min: [0, 'El peso no puede ser negativo'],
+        },
+        completado: {
+            type: Boolean,
+            default: false,
+        },
+        notaPersonal: {
+            type: String,
+        },
     },
-    nombre: {
-        type: String,
-        required: [true, 'El nombre del ejercicio es obligatorio'],
-    },
-    series: {
-        type: Number,
-        required: [true, 'Las series son obligatorias'],
-        min: [1, 'Debe haber al menos 1 serie'],
-    },
-    repeticiones: {
-        type: Number,
-        required: [true, 'Las repeticiones son obligatorias'],
-        min: [1, 'Debe haber al menos 1 repetición'],
-    },
-    peso: {
-        type: Number,
-        default: 0,
-        min: [0, 'El peso no puede ser negativo'],
-    },
-    completado: {
-        type: Boolean,
-        default: false,
-    },
-    notaPersonal: {
-        type: String,
-    }
-}, {_id: false}); //en el subSchema (cada ejercicio no necesita su propio ID) nunca consulto un ejercicio por separado
+    { _id: false },
+); //en el subSchema (cada ejercicio no necesita su propio ID) nunca consulto un ejercicio por separado
 
 //Este es mi esquema que define como se almacenas los entrenamietnos
 const entrenamientoSchema = new Schema<IEntrenamiento>({
@@ -83,7 +86,7 @@ const entrenamientoSchema = new Schema<IEntrenamiento>({
     ejercicios: {
         type: [ejercicioSchema],
         default: [],
-    }
+    },
 });
 
 export const Entrenamiento = mongoose.model<IEntrenamiento>('Entrenamiento', entrenamientoSchema);

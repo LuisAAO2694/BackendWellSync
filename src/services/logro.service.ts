@@ -1,7 +1,6 @@
-import { Logro, ILogro } from "../models/logro.model";
+import { Logro, ILogro } from '../models/logro.model';
 
 export const logroService = {
-
     //Obtengo todos los logros
     async getAll(): Promise<ILogro[]> {
         return await Logro.find();

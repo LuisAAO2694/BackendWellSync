@@ -1,7 +1,6 @@
-import { Reporte, IReporte } from "../models/reporte.model";
+import { Reporte, IReporte } from '../models/reporte.model';
 
 export const reporteService = {
-
     //Obtengo todos los reportes
     async getAll(): Promise<IReporte[]> {
         return await Reporte.find();

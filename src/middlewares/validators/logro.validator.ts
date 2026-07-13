@@ -22,7 +22,10 @@ export function validateCreateLogro(req: Request, res: Response, next: NextFunct
     }
 
     //El habito relacionado es opcional, pero si se envia debe ser un ObjectId valido
-    if (habitoRelacionado !== undefined && (typeof habitoRelacionado !== 'string' || !objectIdRegex.test(habitoRelacionado))) {
+    if (
+        habitoRelacionado !== undefined &&
+        (typeof habitoRelacionado !== 'string' || !objectIdRegex.test(habitoRelacionado))
+    ) {
         errors.push('El hábito relacionado debe ser un ObjectId valido');
     }
 
@@ -47,7 +50,10 @@ export function validateUpdateLogro(req: Request, res: Response, next: NextFunct
         errors.push('La fecha obtenida no es válida');
     }
 
-    if (habitoRelacionado !== undefined && (typeof habitoRelacionado !== 'string' || !objectIdRegex.test(habitoRelacionado))) {
+    if (
+        habitoRelacionado !== undefined &&
+        (typeof habitoRelacionado !== 'string' || !objectIdRegex.test(habitoRelacionado))
+    ) {
         errors.push('El hábito relacionado debe ser un ObjectId valido');
     }
 

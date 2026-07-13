@@ -6,7 +6,10 @@ import {
     updateRegistroDiario,
     deleteRegistroDiario,
 } from '../controllers/registrosDiarios.controller';
-import { validateCreateRegistroDiario, validateUpdateRegistroDiario } from '../middlewares/validators/registroDiario.validator';
+import {
+    validateCreateRegistroDiario,
+    validateUpdateRegistroDiario,
+} from '../middlewares/validators/registroDiario.validator';
 
 const router = Router();
 

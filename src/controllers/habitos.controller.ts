@@ -18,7 +18,7 @@ export async function getAllHabitos(req: Request, res: Response, next: NextFunct
 //Obtengo un habito por el id
 export async function getHabitoById(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const habito = await habitoService.getById(id);
         if (!habito) {
             return next(new AppError('Habito no encontrado', HttpStatus.NOT_FOUND));
@@ -42,7 +42,7 @@ export async function createHabito(req: Request, res: Response, next: NextFuncti
 //Actualizo un habito que ya existe
 export async function updateHabito(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const habito = await habitoService.update(id, req.body);
 
         if (!habito) {
@@ -56,9 +56,9 @@ export async function updateHabito(req: Request, res: Response, next: NextFuncti
 }
 
 //Elimino el habito por el id
-export async function deleteHabito(req: Request, res: Response,next: NextFunction) {
+export async function deleteHabito(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const habito = await habitoService.delete(id);
 
         if (!habito) {

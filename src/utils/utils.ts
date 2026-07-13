@@ -1,7 +1,6 @@
 //Bueno esta es una clase mas que todo para manejar errores dentro del back
 
-export class AppError extends Error 
-{
+export class AppError extends Error {
     public readonly statusCode: number;
     public readonly isOperational: boolean;
 

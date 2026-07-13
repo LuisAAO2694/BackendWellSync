@@ -12,7 +12,8 @@ export interface IHabito extends Document {
 }
 
 const habitosSchema = new Schema<IHabito>({
-    usuario: { //usuario al que pertenece el habito
+    usuario: {
+        //usuario al que pertenece el habito
         type: Schema.Types.ObjectId, //Se almacena como un ObjectId
         ref: 'Usuario', //Referencia al modelo Usuario
         required: [true, 'El usuario es obligatorio'],
@@ -35,14 +36,15 @@ const habitosSchema = new Schema<IHabito>({
     horarioRecordatorio: {
         type: String,
     },
-    activo: { //Indica si el hábito está activo o no
+    activo: {
+        //Indica si el hábito está activo o no
         type: Boolean,
         default: true,
     },
     fechaCreacion: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
 export const Habito = mongoose.model<IHabito>('Habito', habitosSchema);

@@ -18,7 +18,7 @@ export async function getAllEntrenamientos(req: Request, res: Response, next: Ne
 //Obtengo un entrenamietno por su id
 export async function getEntrenamientoById(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const entrenamiento = await entrenamientoService.getById(id);
 
         if (!entrenamiento) {
@@ -44,7 +44,7 @@ export async function createEntrenamiento(req: Request, res: Response, next: Nex
 //Actualizo un entrenamiento que ya existe
 export async function updateEntrenamiento(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const entrenamiento = await entrenamientoService.update(id, req.body);
 
         if (!entrenamiento) {
@@ -60,7 +60,7 @@ export async function updateEntrenamiento(req: Request, res: Response, next: Nex
 //Elimino un entrenamiento por su id
 export async function deleteEntrenamiento(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const entrenamiento = await entrenamientoService.delete(id);
 
         if (!entrenamiento) {

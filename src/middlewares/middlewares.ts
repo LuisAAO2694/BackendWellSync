@@ -4,10 +4,9 @@ import { HttpStatus } from '../types/http-status';
 
 //Middleware global para manejar los errors
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
-    
     //Nomas checo si el error es una instancia de la clase AppError
     //Y si si devuelvo el message
-    if (err instanceof AppError){
+    if (err instanceof AppError) {
         res.status(err.statusCode).json({
             success: false,
             error: { message: err.message, statusCode: err.statusCode },

@@ -6,7 +6,10 @@ import {
     updateEntrenamiento,
     deleteEntrenamiento,
 } from '../controllers/entrenamientos.controller';
-import { validateCreateEntrenamiento, validateUpdateEntrenamiento } from '../middlewares/validators/entrenamiento.validator';
+import {
+    validateCreateEntrenamiento,
+    validateUpdateEntrenamiento,
+} from '../middlewares/validators/entrenamiento.validator';
 
 const router = Router();
 

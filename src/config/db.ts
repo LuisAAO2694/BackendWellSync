@@ -1,9 +1,8 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 export async function connectDB(): Promise<void> {
     const uri = process.env.MONGO_URI;
-    if (!uri) 
-        {
+    if (!uri) {
         console.error('No hay variable de entorno de la BD');
         process.exit(1);
     }
@@ -18,5 +17,4 @@ export async function connectDB(): Promise<void> {
     mongoose.connection.on('disconnected', () => {
         console.warn('MongoDB desconectado');
     });
-    
 }

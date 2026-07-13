@@ -30,7 +30,9 @@ export function validateCreateRegistroDiario(req: Request, res: Response, next: 
         } else {
             habitosCompletados.forEach((hc, index) => {
                 if (!hc.habito || typeof hc.habito !== 'string' || !objectIdRegex.test(hc.habito)) {
-                    errors.push(`Hábito completado ${index + 1}: el ID del hábito es obligatorio y debe ser un ObjectId valido`);
+                    errors.push(
+                        `Hábito completado ${index + 1}: el ID del hábito es obligatorio y debe ser un ObjectId valido`,
+                    );
                 }
                 if (hc.completado !== undefined && typeof hc.completado !== 'boolean') {
                     errors.push(`Hábito completado ${index + 1}: completado debe ser un booleano`);
@@ -66,7 +68,9 @@ export function validateUpdateRegistroDiario(req: Request, res: Response, next: 
         } else {
             habitosCompletados.forEach((hc, index) => {
                 if (!hc.habito || typeof hc.habito !== 'string' || !objectIdRegex.test(hc.habito)) {
-                    errors.push(`Hábito completado ${index + 1}: el ID del hábito es obligatorio y debe ser un ObjectId valido`);
+                    errors.push(
+                        `Hábito completado ${index + 1}: el ID del hábito es obligatorio y debe ser un ObjectId valido`,
+                    );
                 }
                 if (hc.completado !== undefined && typeof hc.completado !== 'boolean') {
                     errors.push(`Hábito completado ${index + 1}: completado debe ser un booleano`);

@@ -1,4 +1,4 @@
-import { Habito, IHabito } from "../models/habito.model";
+import { Habito, IHabito } from '../models/habito.model';
 
 export const habitoService = {
     async getAll(): Promise<IHabito[]> {
@@ -26,5 +26,5 @@ export const habitoService = {
 
     async delete(id: string): Promise<IHabito | null> {
         return await Habito.findByIdAndDelete(id);
-    }
+    },
 };

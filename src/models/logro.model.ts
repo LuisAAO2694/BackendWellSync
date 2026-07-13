@@ -27,7 +27,7 @@ const logroSchema = new Schema<ILogro>({
     fechaObtenido: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
 export const Logro = mongoose.model<ILogro>('Logro', logroSchema);

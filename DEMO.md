@@ -1,4 +1,5 @@
 # WellSync — Demo de CRUD funcionando
+
 ## 0. Levanta el servidor en tu terminal
 
 ```bash
@@ -79,9 +80,9 @@ http://localhost:4000/api/reportes
 
 ```json
 {
-  "usuario": "6a51aac731cc95dd9ad461de",
-  "tipo": "bug",
-  "descripcion": "La app se cierra al abrir el perfil"
+    "usuario": "6a51aac731cc95dd9ad461de",
+    "tipo": "bug",
+    "descripcion": "La app se cierra al abrir el perfil"
 }
 ```
 
@@ -121,7 +122,7 @@ http://localhost:4000/api/reportes/PEGA_AQUI_EL_ID
 
 ```json
 {
-  "estado": "en_proceso"
+    "estado": "en_proceso"
 }
 ```
 
@@ -146,8 +147,8 @@ http://localhost:4000/api/reportes/000000000000000000000000
 
 ```json
 {
-  "success": false,
-  "error": { "message": "Reporte no encontrado", "statusCode": 404 }
+    "success": false,
+    "error": { "message": "Reporte no encontrado", "statusCode": 404 }
 }
 ```
 
@@ -190,8 +191,8 @@ http://localhost:4000/api/logros
 
 ```json
 {
-  "usuario": "6a51aac731cc95dd9ad461de",
-  "tipo": "racha_7_dias"
+    "usuario": "6a51aac731cc95dd9ad461de",
+    "tipo": "racha_7_dias"
 }
 ```
 
@@ -210,7 +211,7 @@ http://localhost:4000/api/logros/PEGA_AQUI_EL_ID
 
 ```json
 {
-  "tipo": "racha_30_dias"
+    "tipo": "racha_30_dias"
 }
 ```
 

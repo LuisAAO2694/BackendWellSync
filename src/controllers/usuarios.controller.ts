@@ -10,14 +10,14 @@ export async function getAllUsuarios(req: Request, res: Response, next: NextFunc
     try {
         const usuarios = await usuarioService.getAll();
         res.json(usuarios);
-    }catch (e){
+    } catch (e) {
         next(e);
     }
 }
 //Obtengo un usuario por su ID
 export async function getUsuarioById(req: Request, res: Response, next: NextFunction) {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const usuario = await usuarioService.getById(id);
 
         if (!usuario) {

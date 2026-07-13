@@ -1,7 +1,6 @@
-import { Entrenamiento, IEntrenamiento } from "../models/entrenamiento.model";
+import { Entrenamiento, IEntrenamiento } from '../models/entrenamiento.model';
 
 export const entrenamientoService = {
-
     //Obtengo todos los entrenamientos
     async getAll(): Promise<IEntrenamiento[]> {
         return await Entrenamiento.find();

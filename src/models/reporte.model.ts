@@ -34,7 +34,7 @@ const reporteSchema = new Schema<IReporte>({
     fechaCreacion: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
 export const Reporte = mongoose.model<IReporte>('Reporte', reporteSchema);

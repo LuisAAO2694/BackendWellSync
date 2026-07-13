@@ -14,17 +14,20 @@ export interface IRegistroDiario extends Document {
     habitosCompletados: IHabitoCompletado[];
 }
 
-const habitoCompletadoSchema = new Schema<IHabitoCompletado>({
-    habito: {
-        type: Schema.Types.ObjectId,
-        ref: 'Habito',
-        required: [true, 'El hábito es obligatorio'],
+const habitoCompletadoSchema = new Schema<IHabitoCompletado>(
+    {
+        habito: {
+            type: Schema.Types.ObjectId,
+            ref: 'Habito',
+            required: [true, 'El hábito es obligatorio'],
+        },
+        completado: {
+            type: Boolean,
+            default: false,
+        },
     },
-    completado: {
-        type: Boolean,
-        default: false,
-    }
-}, { _id: false }); //no necesita su propio id, siempre se consulta junto con el registro diario
+    { _id: false },
+); //no necesita su propio id, siempre se consulta junto con el registro diario
 
 const registroDiarioSchema = new Schema<IRegistroDiario>({
     usuario: {
@@ -46,7 +49,7 @@ const registroDiarioSchema = new Schema<IRegistroDiario>({
     habitosCompletados: {
         type: [habitoCompletadoSchema],
         default: [],
-    }
+    },
 });
 
 export const RegistroDiario = mongoose.model<IRegistroDiario>('RegistroDiario', registroDiarioSchema);
