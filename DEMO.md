@@ -22,7 +22,7 @@ Ten Postman abierto (extensión de VS Code o app de escritorio).
 6a51aac731cc95dd9ad461de
 ```
 
-> Cada vez que hagas un POST, copia el `_id` que te regresa la respuesta — lo vas a necesitar para el GET/PUT/DELETE de ese mismo documento.
+> Cada vez que hagas un POST, copia el `_id` que te regresa la respuesta — necesario para el GET/PUT/DELETE de ese mismo documento.
 
 ---
 
