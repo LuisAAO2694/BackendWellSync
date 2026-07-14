@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken';
 import { jwtConfig } from '../config/jwt';
 import { HttpStatus } from '../types/http-status';
 
-//Bien este es nuestro middleware para utenticar al usuario mediante un JWT 
+//Bien este es nuestro middleware para utenticar al usuario mediante un JWT
 
 //Esta es la interfaz que define la info que esta almacenada dentro del token
 export interface JwtPayload {
-    id: string,
+    id: string;
     rol: 'usuario' | 'administrador';
 }
 
@@ -29,7 +29,6 @@ declare global {
 
 //Este es mi middlware que checa si el user envio un token valido
 export function authenticate(req: Request, res: Response, next: NextFunction) {
-    
     //Obengo el encabezado del auth de la peticion
     const authHeader = req.headers.authorization;
 
@@ -46,17 +45,19 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
     //Extraigo solo el token del encabezado del auth
     const token = authHeader.split(' ')[1];
 
-    try{
+    try {
         //Checo que el token sea valido, uso la clave secreta
-        const decode=jwt.verify(token, jwtConfig.secret) as JwtPayload;
+        const decode = jwt.verify(token, jwtConfig.secret) as JwtPayload;
         //Guardo la info del user que se obtuvo del token
         req.usuario = decode;
         next();
-    }catch(e){
+    } catch (e) {
+        console.error('Error de autenticación:', e instanceof Error ? e.message : e);
+
         //Si mi token es invalido o bien ya expiro, devuelvo error
         res.status(HttpStatus.UNAUTHORIZED).json({
             success: false,
-            error: { message: 'Token inválido o expirado', statusCode: HttpStatus.UNAUTHORIZED }
+            error: { message: 'Token inválido o expirado', statusCode: HttpStatus.UNAUTHORIZED },
         });
     }
 }

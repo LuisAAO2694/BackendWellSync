@@ -43,28 +43,28 @@ export const usuarioService = {
 
     //Aqui inicio sesion checando las credenciales del user
     //Si pasan, genera un token
-    async login(email: string, password: string): Promise<{token: string}> {
-
+    async login(email: string, password: string): Promise<{ token: string }> {
         //Busco al usuario por su correo
         const usuario = await Usuario.findOne({ email });
-        if (!usuario) { //Si no existe pues error
+        if (!usuario) {
+            //Si no existe pues error
             throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
         }
 
         //Aqui comparo la contrasela con la que esta en la bd
         const isPasswordValid = await usuario.comparePassword(password);
-        
+
         //Si no pasa, lanzo error
-        if(!isPasswordValid) {
+        if (!isPasswordValid) {
             throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
         }
 
         //Aqui genero el token con el id y el rol del usuario
         const token = jwt.sign(
             //Esta es la info que tendra el token
-            { id: usuario._id, rol: usuario.rol }, 
+            { id: usuario._id, rol: usuario.rol },
             jwtConfig.secret, //Clave secreta
-            { expiresIn: jwtConfig.expiresIn } //lo que tarda el token en expirar 
+            { expiresIn: jwtConfig.expiresIn }, //lo que tarda el token en expirar
         );
 
         //Devuelvo la info del token

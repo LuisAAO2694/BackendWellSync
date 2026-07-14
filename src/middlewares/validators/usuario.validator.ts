@@ -8,7 +8,7 @@ export function validateCreateUsuario(req: Request, res: Response, next: NextFun
     //Aqui hacemos un simple arreglo donde alamcenare los errores btw que se encuentren
     const errors: string[] = [];
     //Ya aqui obtengo los datos de la peticion
-    const { nombre, email, password, googleId, rol } = req.body;
+    const { nombre, email, password, googleId } = req.body;
 
     //Nombre
     if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0) {
@@ -25,11 +25,6 @@ export function validateCreateUsuario(req: Request, res: Response, next: NextFun
     //Btw este es caso particular si no inicia con google, la contraseña es obligatoria
     if (!googleId && (!password || typeof password !== 'string' || password.length < 8)) {
         errors.push('La contraseña debe tener al menos 8 caracteres');
-    }
-
-    //Valido que el rol sea uno de los que estan permitidos
-    if (rol && !['usuario', 'administrador'].includes(rol)) {
-        errors.push('Rol no vlido. Debe ser "usuario" o "administrador"');
     }
 
     //Y ya si existe un error me devuelve la lista

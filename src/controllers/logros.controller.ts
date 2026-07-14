@@ -5,6 +5,22 @@ import { AppError } from '../utils/utils';
 
 //Este es solo mi controlador para recibir las peticiones HTTP que vienen de los logros
 
+/**
+ * @openapi
+ * /api/logros:
+ *   get:
+ *     tags: [Logros]
+ *     summary: Obtener todos los logros
+ *     responses:
+ *       200:
+ *         description: Lista de logros
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Logro'
+ */
 //Obtengo todos los logros
 export async function getAllLogros(req: Request, res: Response, next: NextFunction) {
     try {
@@ -15,6 +31,29 @@ export async function getAllLogros(req: Request, res: Response, next: NextFuncti
     }
 }
 
+/**
+ * @openapi
+ * /api/logros/{id}:
+ *   get:
+ *     tags: [Logros]
+ *     summary: Obtener un logro por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del logro
+ *     responses:
+ *       200:
+ *         description: Logro encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Logro'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 //Obtengo un logro por su id
 export async function getLogroById(req: Request, res: Response, next: NextFunction) {
     try {
@@ -31,6 +70,32 @@ export async function getLogroById(req: Request, res: Response, next: NextFuncti
     }
 }
 
+/**
+ * @openapi
+ * /api/logros:
+ *   post:
+ *     tags: [Logros]
+ *     summary: Crear un nuevo logro
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateLogroInput'
+ *     responses:
+ *       200:
+ *         description: Logro creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Logro'
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ */
 //Creo un nuevo logro
 export async function createLogro(req: Request, res: Response, next: NextFunction) {
     try {
@@ -41,6 +106,41 @@ export async function createLogro(req: Request, res: Response, next: NextFunctio
     }
 }
 
+/**
+ * @openapi
+ * /api/logros/{id}:
+ *   put:
+ *     tags: [Logros]
+ *     summary: Actualizar un logro existente
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del logro
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateLogroInput'
+ *     responses:
+ *       200:
+ *         description: Logro actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Logro'
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 //Actualizo un logro que ya existe
 export async function updateLogro(req: Request, res: Response, next: NextFunction) {
     try {
@@ -57,6 +157,33 @@ export async function updateLogro(req: Request, res: Response, next: NextFunctio
     }
 }
 
+/**
+ * @openapi
+ * /api/logros/{id}:
+ *   delete:
+ *     tags: [Logros]
+ *     summary: Eliminar un logro
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del logro
+ *     responses:
+ *       200:
+ *         description: Logro eliminado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logro eliminado correctamente
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 //Elimino un logro por su id
 export async function deleteLogro(req: Request, res: Response, next: NextFunction) {
     try {
