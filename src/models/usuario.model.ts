@@ -12,6 +12,7 @@ export interface IUsuario extends Document {
     fotoPerfil?: string;
     rol: 'usuario' | 'administrador';
     fechaRegistro: Date;
+    comparePassword(password: string): Promise<boolean>;
 }
 
 //Este en si es el esquema que define como se almacenan los usuarios en la bd

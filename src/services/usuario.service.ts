@@ -1,4 +1,8 @@
 import { Usuario, IUsuario } from '../models/usuario.model';
+import jwt from 'jsonwebtoken';
+import { jwtConfig } from '../config/jwt';
+import { AppError } from '../utils/utils';
+import { HttpStatus } from '../types/http-status';
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -35,5 +39,35 @@ export const usuarioService = {
     //Elimino un usuario por su ID
     async delete(id: string): Promise<IUsuario | null> {
         return await Usuario.findByIdAndDelete(id);
+    },
+
+    //Aqui inicio sesion checando las credenciales del user
+    //Si pasan, genera un token
+    async login(email: string, password: string): Promise<{token: string}> {
+
+        //Busco al usuario por su correo
+        const usuario = await Usuario.findOne({ email });
+        if (!usuario) { //Si no existe pues error
+            throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
+        }
+
+        //Aqui comparo la contrasela con la que esta en la bd
+        const isPasswordValid = await usuario.comparePassword(password);
+        
+        //Si no pasa, lanzo error
+        if(!isPasswordValid) {
+            throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
+        }
+
+        //Aqui genero el token con el id y el rol del usuario
+        const token = jwt.sign(
+            //Esta es la info que tendra el token
+            { id: usuario._id, rol: usuario.rol }, 
+            jwtConfig.secret, //Clave secreta
+            { expiresIn: jwtConfig.expiresIn } //lo que tarda el token en expirar 
+        );
+
+        //Devuelvo la info del token
+        return { token };
     },
 };

@@ -1,6 +1,3 @@
-import { config } from 'dotenv';
-config();
-
 import { createApp } from './app';
 import { connectDB } from './config/db';
 

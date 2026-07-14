@@ -70,3 +70,16 @@ export async function deleteUsuario(req: Request, res: Response, next: NextFunct
         next(e);
     }
 }
+
+//Este es el controlador que procesa la soli de login
+export async function login(req: Request, res: Response, next: NextFunction) {
+    try {
+        //Nomas obtengo el correo y la contraseña en la peticion
+        const {email, password} = req.body;
+        //Llamo al service para validar las credenciales 
+        const result = await usuarioService.login(email, password);
+        res.json(result);
+    } catch (e) {
+        next(e);
+    }
+}
