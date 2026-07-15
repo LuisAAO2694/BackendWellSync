@@ -15,7 +15,7 @@ WellSync es una aplicación web enfocada en el servidor que permite a los usuari
 
 La app web permite crear rutinas de ejercicio compuestas por múltiples ejercicios, asociarlas a fechas y horarios específicos, marcar su progreso y agregar notas personales sobre cada sesión. Además, cuenta con un sistema de rachas, logros y un registro de nivel de energía diario que ayuda al usuario a correlacionar sus hábitos con su rendimiento físico y mental.
 
-El proyecto estará desarrollado con Node.js siguiendo el patrón de diseño MVC, con autenticación segura mediante JWT y Google OAuth, comunicación en tiempo real con Socket.io, y almacenamiento de archivos en la nube con Cloudinary.
+El proyecto estará desarrollado con Node.js siguiendo el patrón de diseño MVC, con autenticación segura mediante JWT y Google OAuth, comunicación en tiempo real con Socket.io.
 
 ---
 
@@ -73,7 +73,6 @@ El proyecto estará desarrollado con Node.js siguiendo el patrón de diseño MVC
 | Google OAuth | Inicio de sesión con cuenta de Google mediante Passport.js. |
 | ExerciseDB API | Catálogo gratuito de más de 11,000 ejercicios con imágenes, músculos trabajados e instrucciones. |
 | CalorieNinjas API | API gratuita de nutrición con más de 100,000 alimentos para sugerencias de dieta. |
-| Cloudinary | Almacenamiento de imágenes y archivos del usuario en la nube. |
 
 ---
 
