@@ -7,11 +7,7 @@ const objectIdRegex = /^[a-f\d]{24}$/i;
 //Este middleware valida los datos necesarios para crear un registro diario
 export function validateCreateRegistroDiario(req: Request, res: Response, next: NextFunction) {
     const errors: string[] = [];
-    const { usuario, fecha, nivelEnergia, habitosCompletados } = req.body;
-
-    if (!usuario || typeof usuario !== 'string' || !objectIdRegex.test(usuario)) {
-        errors.push('El ID del usuario es obligatorio y debe ser un ObjectId valido');
-    }
+    const { fecha, nivelEnergia, habitosCompletados } = req.body;
 
     if (!fecha) {
         errors.push('La fecha es obligatoria');

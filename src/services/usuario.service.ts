@@ -13,8 +13,11 @@ export const usuarioService = {
         return await Usuario.find().select('-password');
     },
 
-    //Para no devolver la contraseña
-    async getById(id: string): Promise<IUsuario | null> {
+    //Admin puede ver cualquier usuario, usuario normal solo su propio perfil
+    async getById(id: string, usuarioId: string, rol: string): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para ver este perfil', HttpStatus.FORBIDDEN);
+        }
         return await Usuario.findById(id).select('-password');
     },
 
@@ -25,9 +28,12 @@ export const usuarioService = {
         return await Usuario.findById(usuario._id).select('-password');
     },
 
-    //Actualizo un usuario existente por su ID
-    //Uso findById + save() para que se ejecute el pre('save') y encripte la password tambien
-    async update(id: string, data: Partial<IUsuario>): Promise<IUsuario | null> {
+    //Admin puede actualizar cualquier usuario, usuario normal solo su propio perfil
+    async update(id: string, data: Partial<IUsuario>, usuarioId: string, rol: string): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para actualizar este perfil', HttpStatus.FORBIDDEN);
+        }
+        //Uso findById + save() para que se ejecute el pre('save') y encripte la password tambien
         const usuario = await Usuario.findById(id);
         if (!usuario) return null;
 
@@ -36,7 +42,7 @@ export const usuarioService = {
         return await Usuario.findById(usuario._id).select('-password');
     },
 
-    //Elimino un usuario por su ID
+    //Elimino un usuario por su ID (solo admin, se valida desde la ruta)
     async delete(id: string): Promise<IUsuario | null> {
         return await Usuario.findByIdAndDelete(id);
     },

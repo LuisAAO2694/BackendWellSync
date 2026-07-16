@@ -11,6 +11,8 @@ import { AppError } from '../utils/utils';
  *   get:
  *     tags: [Entrenamientos]
  *     summary: Obtener todos los entrenamientos
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de entrenamientos
@@ -21,10 +23,10 @@ import { AppError } from '../utils/utils';
  *               items:
  *                 $ref: '#/components/schemas/Entrenamiento'
  */
-//Obtengo todos los entrenamientos
+//Obtengo todos los entrenamientos del usuario autenticado
 export async function getAllEntrenamientos(req: Request, res: Response, next: NextFunction) {
     try {
-        const entrenamientos = await entrenamientoService.getAll();
+        const entrenamientos = await entrenamientoService.getAll(req.usuario!.id);
         res.json(entrenamientos);
     } catch (e) {
         next(e);
@@ -37,6 +39,8 @@ export async function getAllEntrenamientos(req: Request, res: Response, next: Ne
  *   get:
  *     tags: [Entrenamientos]
  *     summary: Obtener un entrenamiento por ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,11 +58,11 @@ export async function getAllEntrenamientos(req: Request, res: Response, next: Ne
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Obtengo un entrenamietno por su id
+//Obtengo un entrenamiento por su id (solo si pertenece al usuario autenticado)
 export async function getEntrenamientoById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const entrenamiento = await entrenamientoService.getById(id);
+        const entrenamiento = await entrenamientoService.getById(id, req.usuario!.id);
 
         if (!entrenamiento) {
             return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));
@@ -76,6 +80,8 @@ export async function getEntrenamientoById(req: Request, res: Response, next: Ne
  *   post:
  *     tags: [Entrenamientos]
  *     summary: Crear un nuevo entrenamiento
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -96,10 +102,10 @@ export async function getEntrenamientoById(req: Request, res: Response, next: Ne
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
  */
-//Creo un nuevo entrenamiento
+//Creo un nuevo entrenamiento (asignando automaticamente el usuario del token)
 export async function createEntrenamiento(req: Request, res: Response, next: NextFunction) {
     try {
-        const entrenamiento = await entrenamientoService.create(req.body);
+        const entrenamiento = await entrenamientoService.create(req.body, req.usuario!.id);
         res.status(HttpStatus.SUCCESS).json(entrenamiento);
     } catch (e) {
         next(e);
@@ -112,6 +118,8 @@ export async function createEntrenamiento(req: Request, res: Response, next: Nex
  *   put:
  *     tags: [Entrenamientos]
  *     summary: Actualizar un entrenamiento existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -141,11 +149,11 @@ export async function createEntrenamiento(req: Request, res: Response, next: Nex
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Actualizo un entrenamiento que ya existe
+//Actualizo un entrenamiento (solo si pertenece al usuario autenticado)
 export async function updateEntrenamiento(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const entrenamiento = await entrenamientoService.update(id, req.body);
+        const entrenamiento = await entrenamientoService.update(id, req.body, req.usuario!.id);
 
         if (!entrenamiento) {
             return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));
@@ -163,6 +171,8 @@ export async function updateEntrenamiento(req: Request, res: Response, next: Nex
  *   delete:
  *     tags: [Entrenamientos]
  *     summary: Eliminar un entrenamiento
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,11 +194,11 @@ export async function updateEntrenamiento(req: Request, res: Response, next: Nex
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Elimino un entrenamiento por su id
+//Elimino un entrenamiento por su id (solo si pertenece al usuario autenticado)
 export async function deleteEntrenamiento(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const entrenamiento = await entrenamientoService.delete(id);
+        const entrenamiento = await entrenamientoService.delete(id, req.usuario!.id);
 
         if (!entrenamiento) {
             return next(new AppError('Entrenamiento no encontrado', HttpStatus.NOT_FOUND));

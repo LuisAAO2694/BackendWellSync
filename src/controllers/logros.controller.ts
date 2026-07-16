@@ -11,6 +11,8 @@ import { AppError } from '../utils/utils';
  *   get:
  *     tags: [Logros]
  *     summary: Obtener todos los logros
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de logros
@@ -21,10 +23,10 @@ import { AppError } from '../utils/utils';
  *               items:
  *                 $ref: '#/components/schemas/Logro'
  */
-//Obtengo todos los logros
+//Obtengo todos los logros del usuario autenticado
 export async function getAllLogros(req: Request, res: Response, next: NextFunction) {
     try {
-        const logros = await logroService.getAll();
+        const logros = await logroService.getAll(req.usuario!.id);
         res.json(logros);
     } catch (e) {
         next(e);
@@ -37,6 +39,8 @@ export async function getAllLogros(req: Request, res: Response, next: NextFuncti
  *   get:
  *     tags: [Logros]
  *     summary: Obtener un logro por ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,11 +58,11 @@ export async function getAllLogros(req: Request, res: Response, next: NextFuncti
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Obtengo un logro por su id
+//Obtengo un logro por su id (solo si pertenece al usuario autenticado)
 export async function getLogroById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const logro = await logroService.getById(id);
+        const logro = await logroService.getById(id, req.usuario!.id);
 
         if (!logro) {
             return next(new AppError('Logro no encontrado', HttpStatus.NOT_FOUND));
@@ -76,6 +80,8 @@ export async function getLogroById(req: Request, res: Response, next: NextFuncti
  *   post:
  *     tags: [Logros]
  *     summary: Crear un nuevo logro
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -96,10 +102,10 @@ export async function getLogroById(req: Request, res: Response, next: NextFuncti
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
  */
-//Creo un nuevo logro
+//Creo un nuevo logro (asignando automaticamente el usuario del token)
 export async function createLogro(req: Request, res: Response, next: NextFunction) {
     try {
-        const logro = await logroService.create(req.body);
+        const logro = await logroService.create(req.body, req.usuario!.id);
         res.status(HttpStatus.SUCCESS).json(logro);
     } catch (e) {
         next(e);
@@ -112,6 +118,8 @@ export async function createLogro(req: Request, res: Response, next: NextFunctio
  *   put:
  *     tags: [Logros]
  *     summary: Actualizar un logro existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -141,11 +149,11 @@ export async function createLogro(req: Request, res: Response, next: NextFunctio
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Actualizo un logro que ya existe
+//Actualizo un logro (solo si pertenece al usuario autenticado)
 export async function updateLogro(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const logro = await logroService.update(id, req.body);
+        const logro = await logroService.update(id, req.body, req.usuario!.id);
 
         if (!logro) {
             return next(new AppError('Logro no encontrado', HttpStatus.NOT_FOUND));
@@ -163,6 +171,8 @@ export async function updateLogro(req: Request, res: Response, next: NextFunctio
  *   delete:
  *     tags: [Logros]
  *     summary: Eliminar un logro
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,11 +194,11 @@ export async function updateLogro(req: Request, res: Response, next: NextFunctio
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Elimino un logro por su id
+//Elimino un logro por su id (solo si pertenece al usuario autenticado)
 export async function deleteLogro(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const logro = await logroService.delete(id);
+        const logro = await logroService.delete(id, req.usuario!.id);
 
         if (!logro) {
             return next(new AppError('Logro no encontrado', HttpStatus.NOT_FOUND));

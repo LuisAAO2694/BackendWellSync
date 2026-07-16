@@ -27,6 +27,21 @@ declare global {
     }
 }
 
+//Este middleware restringe el acceso segun el rol del usuario
+//Uso: router.get('/', authenticate, authorize('administrador'), handler)
+export function authorize(...roles: ('usuario' | 'administrador')[]) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (!req.usuario || !roles.includes(req.usuario.rol)) {
+            res.status(HttpStatus.FORBIDDEN).json({
+                success: false,
+                error: { message: 'No tienes permisos para acceder a este recurso', statusCode: HttpStatus.FORBIDDEN },
+            });
+            return;
+        }
+        next();
+    };
+}
+
 //Este es mi middlware que checa si el user envio un token valido
 export function authenticate(req: Request, res: Response, next: NextFunction) {
     //Obengo el encabezado del auth de la peticion

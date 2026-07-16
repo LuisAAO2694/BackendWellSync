@@ -7,11 +7,7 @@ const objectIdRegex = /^[a-f\d]{24}$/i;
 //Este middleware valida los datos necesarios para crear un logro
 export function validateCreateLogro(req: Request, res: Response, next: NextFunction) {
     const errors: string[] = [];
-    const { usuario, tipo, fechaObtenido, habitoRelacionado } = req.body;
-
-    if (!usuario || typeof usuario !== 'string' || !objectIdRegex.test(usuario)) {
-        errors.push('El ID del usuario es obligatorio y debe ser un ObjectId valido');
-    }
+    const { tipo, fechaObtenido, habitoRelacionado } = req.body;
 
     if (!tipo || typeof tipo !== 'string' || tipo.trim().length === 0) {
         errors.push('El tipo de logro es obligatorio');

@@ -11,6 +11,8 @@ import { AppError } from '../utils/utils';
  *   get:
  *     tags: [Hábitos]
  *     summary: Obtener todos los hábitos
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de hábitos
@@ -21,10 +23,10 @@ import { AppError } from '../utils/utils';
  *               items:
  *                 $ref: '#/components/schemas/Habito'
  */
-//Obtengo los habitos
+//Obtengo los habitos del usuario autenticado
 export async function getAllHabitos(req: Request, res: Response, next: NextFunction) {
     try {
-        const habitos = await habitoService.getAll();
+        const habitos = await habitoService.getAll(req.usuario!.id);
         res.json(habitos);
     } catch (e) {
         next(e);
@@ -37,6 +39,8 @@ export async function getAllHabitos(req: Request, res: Response, next: NextFunct
  *   get:
  *     tags: [Hábitos]
  *     summary: Obtener un hábito por ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,11 +58,11 @@ export async function getAllHabitos(req: Request, res: Response, next: NextFunct
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Obtengo un habito por el id
+//Obtengo un habito por el id (solo si pertenece al usuario autenticado)
 export async function getHabitoById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.getById(id);
+        const habito = await habitoService.getById(id, req.usuario!.id);
         if (!habito) {
             return next(new AppError('Habito no encontrado', HttpStatus.NOT_FOUND));
         }
@@ -74,6 +78,8 @@ export async function getHabitoById(req: Request, res: Response, next: NextFunct
  *   post:
  *     tags: [Hábitos]
  *     summary: Crear un nuevo hábito
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -94,10 +100,10 @@ export async function getHabitoById(req: Request, res: Response, next: NextFunct
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
  */
-//Creo un nuevo habito
+//Creo un nuevo habito (asignando automaticamente el usuario del token)
 export async function createHabito(req: Request, res: Response, next: NextFunction) {
     try {
-        const habito = await habitoService.create(req.body);
+        const habito = await habitoService.create(req.body, req.usuario!.id);
         res.status(HttpStatus.SUCCESS).json(habito);
     } catch (e) {
         next(e);
@@ -110,6 +116,8 @@ export async function createHabito(req: Request, res: Response, next: NextFuncti
  *   put:
  *     tags: [Hábitos]
  *     summary: Actualizar un hábito existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -139,11 +147,11 @@ export async function createHabito(req: Request, res: Response, next: NextFuncti
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Actualizo un habito que ya existe
+//Actualizo un habito (solo si pertenece al usuario autenticado)
 export async function updateHabito(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.update(id, req.body);
+        const habito = await habitoService.update(id, req.body, req.usuario!.id);
 
         if (!habito) {
             return next(new AppError('Habito no encontrado', HttpStatus.NOT_FOUND));
@@ -161,6 +169,8 @@ export async function updateHabito(req: Request, res: Response, next: NextFuncti
  *   delete:
  *     tags: [Hábitos]
  *     summary: Eliminar un hábito
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,11 +192,11 @@ export async function updateHabito(req: Request, res: Response, next: NextFuncti
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Elimino el habito por el id
+//Elimino el habito por el id (solo si pertenece al usuario autenticado)
 export async function deleteHabito(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.delete(id);
+        const habito = await habitoService.delete(id, req.usuario!.id);
 
         if (!habito) {
             return next(new AppError('Hábito no encontrado', HttpStatus.NOT_FOUND));

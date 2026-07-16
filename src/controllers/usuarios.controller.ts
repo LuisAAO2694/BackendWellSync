@@ -95,11 +95,11 @@ export async function getAllUsuarios(req: Request, res: Response, next: NextFunc
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Obtengo un usuario por su ID
+//Obtengo un usuario por su ID (admin ve cualquiera, user solo su propio perfil)
 export async function getUsuarioById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const usuario = await usuarioService.getById(id);
+        const usuario = await usuarioService.getById(id, req.usuario!.id, req.usuario!.rol);
 
         if (!usuario) {
             return next(new AppError('Usuario no encontrado', HttpStatus.NOT_FOUND));
@@ -180,11 +180,11 @@ export async function createUsuario(req: Request, res: Response, next: NextFunct
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Actualizo un usuario existente
+//Actualizo un usuario existente (admin actualiza cualquiera, user solo su propio perfil)
 export async function updateUsuario(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const usuario = await usuarioService.update(id, req.body);
+        const usuario = await usuarioService.update(id, req.body, req.usuario!.id, req.usuario!.rol);
 
         if (!usuario) {
             return next(new AppError('Usuario no encontrado', HttpStatus.NOT_FOUND));

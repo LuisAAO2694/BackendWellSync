@@ -11,6 +11,8 @@ import { AppError } from '../utils/utils';
  *   get:
  *     tags: [Registros Diarios]
  *     summary: Obtener todos los registros diarios
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de registros diarios
@@ -21,10 +23,10 @@ import { AppError } from '../utils/utils';
  *               items:
  *                 $ref: '#/components/schemas/RegistroDiario'
  */
-//Obtengo todos los registros diarios
+//Obtengo todos los registros diarios del usuario autenticado
 export async function getAllRegistrosDiarios(req: Request, res: Response, next: NextFunction) {
     try {
-        const registros = await registroDiarioService.getAll();
+        const registros = await registroDiarioService.getAll(req.usuario!.id);
         res.json(registros);
     } catch (e) {
         next(e);
@@ -37,6 +39,8 @@ export async function getAllRegistrosDiarios(req: Request, res: Response, next: 
  *   get:
  *     tags: [Registros Diarios]
  *     summary: Obtener un registro diario por ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,11 +58,11 @@ export async function getAllRegistrosDiarios(req: Request, res: Response, next: 
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Obtengo un registro diario por su id
+//Obtengo un registro diario por su id (solo si pertenece al usuario autenticado)
 export async function getRegistroDiarioById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const registro = await registroDiarioService.getById(id);
+        const registro = await registroDiarioService.getById(id, req.usuario!.id);
 
         if (!registro) {
             return next(new AppError('Registro diario no encontrado', HttpStatus.NOT_FOUND));
@@ -76,6 +80,8 @@ export async function getRegistroDiarioById(req: Request, res: Response, next: N
  *   post:
  *     tags: [Registros Diarios]
  *     summary: Crear un nuevo registro diario
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -96,10 +102,10 @@ export async function getRegistroDiarioById(req: Request, res: Response, next: N
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
  */
-//Creo un nuevo registro diario
+//Creo un nuevo registro diario (asignando automaticamente el usuario del token)
 export async function createRegistroDiario(req: Request, res: Response, next: NextFunction) {
     try {
-        const registro = await registroDiarioService.create(req.body);
+        const registro = await registroDiarioService.create(req.body, req.usuario!.id);
         res.status(HttpStatus.SUCCESS).json(registro);
     } catch (e) {
         next(e);
@@ -112,6 +118,8 @@ export async function createRegistroDiario(req: Request, res: Response, next: Ne
  *   put:
  *     tags: [Registros Diarios]
  *     summary: Actualizar un registro diario existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -141,11 +149,11 @@ export async function createRegistroDiario(req: Request, res: Response, next: Ne
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Actualizo un registro diario que ya existe
+//Actualizo un registro diario (solo si pertenece al usuario autenticado)
 export async function updateRegistroDiario(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const registro = await registroDiarioService.update(id, req.body);
+        const registro = await registroDiarioService.update(id, req.body, req.usuario!.id);
 
         if (!registro) {
             return next(new AppError('Registro diario no encontrado', HttpStatus.NOT_FOUND));
@@ -163,6 +171,8 @@ export async function updateRegistroDiario(req: Request, res: Response, next: Ne
  *   delete:
  *     tags: [Registros Diarios]
  *     summary: Eliminar un registro diario
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,11 +194,11 @@ export async function updateRegistroDiario(req: Request, res: Response, next: Ne
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-//Elimino un registro diario por su id
+//Elimino un registro diario por su id (solo si pertenece al usuario autenticado)
 export async function deleteRegistroDiario(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const registro = await registroDiarioService.delete(id);
+        const registro = await registroDiarioService.delete(id, req.usuario!.id);
 
         if (!registro) {
             return next(new AppError('Registro diario no encontrado', HttpStatus.NOT_FOUND));

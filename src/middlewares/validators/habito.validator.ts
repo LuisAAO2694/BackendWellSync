@@ -2,17 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '../../types/http-status';
 
 //Esta es una expresion que usualemnte se usa para validar que un ID tenga el formato de un ObjectId de MongoDB
-const objectIdRegex = /^[a-f\d]{24}$/i;
+//const objectIdRegex = /^[a-f\d]{24}$/i;
 
 //Este es el middleware que valida los datos necesarios para crear un habito
 export function validateCreateHabito(req: Request, res: Response, next: NextFunction) {
     const errors: string[] = [];
-    const { usuario, nombre, categoria, metaDiaria, horarioRecordatorio, activo } = req.body;
+    const { nombre, categoria, metaDiaria, horarioRecordatorio, activo } = req.body;
 
-    //Valido que el ID del usuario exista y tenga el formato de un ObjectId
-    if (!usuario || typeof usuario !== 'string' || !objectIdRegex.test(usuario)) {
-        errors.push('El ID del usuario es obligatorio y debe ser un ObjectId valido');
-    }
     //Valida que el nombre del habito exista y no esté vacio
     if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0) {
         errors.push('El nombre del habito es obligatorio');

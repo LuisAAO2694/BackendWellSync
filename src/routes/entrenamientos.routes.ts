@@ -10,13 +10,14 @@ import {
     validateCreateEntrenamiento,
     validateUpdateEntrenamiento,
 } from '../middlewares/validators/entrenamiento.validator';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', getAllEntrenamientos);
-router.get('/:id', getEntrenamientoById);
-router.post('/', validateCreateEntrenamiento, createEntrenamiento);
-router.put('/:id', validateUpdateEntrenamiento, updateEntrenamiento);
-router.delete('/:id', deleteEntrenamiento);
+router.get('/', authenticate, getAllEntrenamientos);
+router.get('/:id', authenticate, getEntrenamientoById);
+router.post('/', authenticate, validateCreateEntrenamiento, createEntrenamiento);
+router.put('/:id', authenticate, validateUpdateEntrenamiento, updateEntrenamiento);
+router.delete('/:id', authenticate, deleteEntrenamiento);
 
 export default router;
