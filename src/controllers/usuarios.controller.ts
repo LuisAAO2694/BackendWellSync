@@ -241,3 +241,75 @@ export async function deleteUsuario(req: Request, res: Response, next: NextFunct
         next(e);
     }
 }
+
+/**
+ * @openapi
+ * /api/usuarios/forgot-password:
+ *   post:
+ *     tags: [Usuarios]
+ *     summary: Solicitar recuperación de contraseña
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForgotPasswordInput'
+ *     responses:
+ *       200:
+ *         description: Mensaje genérico de recuperación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
+//Mi controlador que procesa la solicitud de recuperar contraseña
+export async function forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email } = req.body;
+        const result = await usuarioService.forgotPassword(email);
+        res.json(result);
+    } catch (e) {
+        next(e);
+    }
+}
+
+/**
+ * @openapi
+ * /api/usuarios/reset-password:
+ *   post:
+ *     tags: [Usuarios]
+ *     summary: Restablecer contraseña con token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ResetPasswordInput'
+ *     responses:
+ *       200:
+ *         description: Contraseña actualizada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
+//Controlador solo para procesar la solicitud del restablecimiento de la contraseña
+export async function resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { token, password } = req.body;
+        const result = await usuarioService.resetPassword(token, password);
+        res.json(result);
+    } catch (e) {
+        next(e);
+    }
+}

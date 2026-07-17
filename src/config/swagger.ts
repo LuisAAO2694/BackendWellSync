@@ -264,6 +264,21 @@ const options: swaggerJsdoc.Options = {
                         },
                     },
                 },
+                ForgotPasswordInput: {
+                    type: 'object',
+                    required: ['email'],
+                    properties: {
+                        email: { type: 'string', format: 'email' },
+                    },
+                },
+                ResetPasswordInput: {
+                    type: 'object',
+                    required: ['token', 'password'],
+                    properties: {
+                        token: { type: 'string' },
+                        password: { type: 'string', minLength: 8 },
+                    },
+                },
             },
             responses: {
                 Unauthorized: {
@@ -287,6 +302,14 @@ const options: swaggerJsdoc.Options = {
                     content: {
                         'application/json': {
                             schema: { $ref: '#/components/schemas/ErrorResponse' },
+                        },
+                    },
+                },
+                BadRequest: {
+                    description: 'Error de validación',
+                    content: {
+                        'application/json': {
+                            schema: { $ref: '#/components/schemas/ValidationError' },
                         },
                     },
                 },

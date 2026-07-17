@@ -10,6 +10,8 @@ export interface IUsuario extends Document {
     password?: string;
     googleId?: string;
     fotoPerfil?: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
     rol: 'usuario' | 'administrador';
     fechaRegistro: Date;
     comparePassword(password: string): Promise<boolean>;
@@ -38,6 +40,12 @@ const usuarioSchema = new Schema<IUsuario>({
     },
     fotoPerfil: {
         type: String,
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
     },
     rol: {
         type: String,

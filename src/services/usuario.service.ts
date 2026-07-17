@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { jwtConfig } from '../config/jwt';
 import { AppError } from '../utils/utils';
 import { HttpStatus } from '../types/http-status';
+import crypto from 'crypto'; //Operacion criptografica
+import { emailService } from './email.service';
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -75,5 +77,61 @@ export const usuarioService = {
 
         //Devuelvo la info del token
         return { token };
+    },
+
+    //Bien aqui, genero un token de recuperacion y envio el correo al usuario
+    async forgotPassword(email: string): Promise<{ message: string }> {
+        //Busco el user por su email
+        const usuario = await Usuario.findOne({ email });
+
+        //Aqui en si por seguridad, simepre devuelvo el mismo mensaje, aunque el correo no exista
+        if (!usuario) {
+            return { message: 'Si el correo existe, recibirás un enlace de recuperación' };
+        }
+
+        //Genero el token aleatorio
+        const rawToken = crypto.randomBytes(32).toString('hex');
+
+        //Creo un hash del token para almacenarlo de forma segura
+        const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+        //Guardo el token y la fecha de expiracion (1 hora, pero lo podemos cambiar)
+        usuario.resetPasswordToken = hashedToken;
+        usuario.resetPasswordExpires = new Date(Date.now() + 3600000);
+
+        //Guardo los cambios
+        await usuario.save();
+
+        //Envio al user un correo con el enlace para recuperar
+        await emailService.sendResetPasswordEmail(usuario.email, rawToken);
+        return { message: 'Si el correo existe, recibirás un enlace de recuperación' };
+    },
+
+    //Aqui restablezco la pass utilizando el token que me llego
+    async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+        //Genero el hash del token recibido para comparalo con el que tengo guardado
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        //Busco el usuario con ese token y checo que o haya expirado
+        const usuario = await Usuario.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: new Date() }, //La fecha debe ser mayor a la actual
+        });
+
+        //Si mi token no exite o expiro, le lanzo un error
+        if (!usuario) {
+            throw new AppError('Token inválido o expirado', HttpStatus.BAD_REQUEST);
+        }
+
+        //Actualizo la pass del user
+        usuario.password = newPassword;
+
+        //Elimino el token y la fecha de expiracion para evitar cositas jajaj
+        usuario.resetPasswordToken = undefined;
+        usuario.resetPasswordExpires = undefined;
+        //Gurado los cambios
+        await usuario.save();
+
+        return { message: 'Contraseña actualizada correctamente' };
     },
 };
