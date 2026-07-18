@@ -171,6 +171,18 @@ const options: swaggerJsdoc.Options = {
                         habitoRelacionado: { type: 'string' },
                     },
                 },
+                Notificacion: {
+                    type: 'object',
+                    properties: {
+                        _id: { type: 'string' },
+                        usuario: { type: 'string', description: 'ID del usuario' },
+                        tipo: { type: 'string' },
+                        mensaje: { type: 'string' },
+                        leida: { type: 'boolean' },
+                        fecha: { type: 'string', format: 'date-time' },
+                        referenciaId: { type: 'string', description: 'ID del recurso relacionado (opcional)' },
+                    },
+                },
                 Reporte: {
                     type: 'object',
                     properties: {
