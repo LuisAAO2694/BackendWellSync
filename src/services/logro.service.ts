@@ -1,4 +1,5 @@
 import { Logro, ILogro } from '../models/logro.model';
+import { notificacionService } from './notificacion.service';
 
 export const logroService = {
     //Solo devuelve los logros del usuario autenticado
@@ -11,9 +12,22 @@ export const logroService = {
         return await Logro.findOne({ _id: id, usuario: usuarioId });
     },
 
-    //Crea un logro forzando el usuario del token por seguridad
+    //Crea un logro forzando el usuario del token por seguridad, y notifica al usuario
     async create(data: Partial<ILogro>, usuarioId: string): Promise<ILogro> {
-        return await Logro.create({ ...data, usuario: usuarioId });
+        const logro = await Logro.create({ ...data, usuario: usuarioId });
+
+        try {
+            await notificacionService.crear(
+                usuarioId,
+                'logro',
+                `¡Has desbloqueado un logro: ${logro.tipo}!`,
+                logro._id.toString(),
+            );
+        } catch (e) {
+            console.error('Error al crear la notificación del logro:', e);
+        }
+
+        return logro;
     },
 
     //Actualiza un logro, solo si pertenece al usuario autenticado
