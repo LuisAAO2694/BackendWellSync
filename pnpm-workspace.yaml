@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@scarf/scarf'
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - bcrypt
+  - esbuild

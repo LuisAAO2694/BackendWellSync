@@ -1,4 +1,10 @@
 import { Usuario, IUsuario } from '../models/usuario.model';
+import jwt from 'jsonwebtoken';
+import { jwtConfig } from '../config/jwt';
+import { AppError } from '../utils/utils';
+import { HttpStatus } from '../types/http-status';
+import crypto from 'crypto'; //Operacion criptografica
+import { emailService } from './email.service';
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -9,8 +15,11 @@ export const usuarioService = {
         return await Usuario.find().select('-password');
     },
 
-    //Para no devolver la contraseña
-    async getById(id: string): Promise<IUsuario | null> {
+    //Admin puede ver cualquier usuario, usuario normal solo su propio perfil
+    async getById(id: string, usuarioId: string, rol: string): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para ver este perfil', HttpStatus.FORBIDDEN);
+        }
         return await Usuario.findById(id).select('-password');
     },
 
@@ -21,9 +30,12 @@ export const usuarioService = {
         return await Usuario.findById(usuario._id).select('-password');
     },
 
-    //Actualizo un usuario existente por su ID
-    //Uso findById + save() para que se ejecute el pre('save') y encripte la password tambien
-    async update(id: string, data: Partial<IUsuario>): Promise<IUsuario | null> {
+    //Admin puede actualizar cualquier usuario, usuario normal solo su propio perfil
+    async update(id: string, data: Partial<IUsuario>, usuarioId: string, rol: string): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para actualizar este perfil', HttpStatus.FORBIDDEN);
+        }
+        //Uso findById + save() para que se ejecute el pre('save') y encripte la password tambien
         const usuario = await Usuario.findById(id);
         if (!usuario) return null;
 
@@ -32,8 +44,94 @@ export const usuarioService = {
         return await Usuario.findById(usuario._id).select('-password');
     },
 
-    //Elimino un usuario por su ID
+    //Elimino un usuario por su ID (solo admin, se valida desde la ruta)
     async delete(id: string): Promise<IUsuario | null> {
         return await Usuario.findByIdAndDelete(id);
+    },
+
+    //Aqui inicio sesion checando las credenciales del user
+    //Si pasan, genera un token
+    async login(email: string, password: string): Promise<{ token: string }> {
+        //Busco al usuario por su correo
+        const usuario = await Usuario.findOne({ email });
+        if (!usuario) {
+            //Si no existe pues error
+            throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
+        }
+
+        //Aqui comparo la contrasela con la que esta en la bd
+        const isPasswordValid = await usuario.comparePassword(password);
+
+        //Si no pasa, lanzo error
+        if (!isPasswordValid) {
+            throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
+        }
+
+        //Aqui genero el token con el id y el rol del usuario
+        const token = jwt.sign(
+            //Esta es la info que tendra el token
+            { id: usuario._id, rol: usuario.rol },
+            jwtConfig.secret, //Clave secreta
+            { expiresIn: jwtConfig.expiresIn }, //lo que tarda el token en expirar
+        );
+
+        //Devuelvo la info del token
+        return { token };
+    },
+
+    //Bien aqui, genero un token de recuperacion y envio el correo al usuario
+    async forgotPassword(email: string): Promise<{ message: string }> {
+        //Busco el user por su email
+        const usuario = await Usuario.findOne({ email });
+
+        //Aqui en si por seguridad, simepre devuelvo el mismo mensaje, aunque el correo no exista
+        if (!usuario) {
+            return { message: 'Si el correo existe, recibirás un enlace de recuperación' };
+        }
+
+        //Genero el token aleatorio
+        const rawToken = crypto.randomBytes(32).toString('hex');
+
+        //Creo un hash del token para almacenarlo de forma segura
+        const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+        //Guardo el token y la fecha de expiracion (1 hora, pero lo podemos cambiar)
+        usuario.resetPasswordToken = hashedToken;
+        usuario.resetPasswordExpires = new Date(Date.now() + 3600000);
+
+        //Guardo los cambios
+        await usuario.save();
+
+        //Envio al user un correo con el enlace para recuperar
+        await emailService.sendResetPasswordEmail(usuario.email, rawToken);
+        return { message: 'Si el correo existe, recibirás un enlace de recuperación' };
+    },
+
+    //Aqui restablezco la pass utilizando el token que me llego
+    async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+        //Genero el hash del token recibido para comparalo con el que tengo guardado
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        //Busco el usuario con ese token y checo que o haya expirado
+        const usuario = await Usuario.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: new Date() }, //La fecha debe ser mayor a la actual
+        });
+
+        //Si mi token no exite o expiro, le lanzo un error
+        if (!usuario) {
+            throw new AppError('Token inválido o expirado', HttpStatus.BAD_REQUEST);
+        }
+
+        //Actualizo la pass del user
+        usuario.password = newPassword;
+
+        //Elimino el token y la fecha de expiracion para evitar cositas jajaj
+        usuario.resetPasswordToken = undefined;
+        usuario.resetPasswordExpires = undefined;
+        //Gurado los cambios
+        await usuario.save();
+
+        return { message: 'Contraseña actualizada correctamente' };
     },
 };

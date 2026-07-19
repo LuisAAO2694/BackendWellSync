@@ -1,31 +1,35 @@
 import { Reporte, IReporte } from '../models/reporte.model';
 
 export const reporteService = {
-    //Obtengo todos los reportes
-    async getAll(): Promise<IReporte[]> {
-        return await Reporte.find();
+    //Admin ve todos los reportes, usuario solo los suyos
+    async getAll(usuarioId: string, rol: string): Promise<IReporte[]> {
+        const filter = rol === 'administrador' ? {} : { usuario: usuarioId };
+        return await Reporte.find(filter);
     },
 
-    //Busco por id el reporte
-    async getById(id: string): Promise<IReporte | null> {
-        return await Reporte.findById(id);
+    //Admin puede ver cualquier reporte, usuario solo el suyo
+    async getById(id: string, usuarioId: string, rol: string): Promise<IReporte | null> {
+        const filter = rol === 'administrador' ? { _id: id } : { _id: id, usuario: usuarioId };
+        return await Reporte.findOne(filter);
     },
 
-    //Creo un reporte
-    async create(data: Partial<IReporte>): Promise<IReporte> {
-        return await Reporte.create(data);
+    //Crea un reporte forzando el usuario del token por seguridad
+    async create(data: Partial<IReporte>, usuarioId: string): Promise<IReporte> {
+        return await Reporte.create({ ...data, usuario: usuarioId });
     },
 
-    //Actualizo por su id
-    async update(id: string, data: Partial<IReporte>): Promise<IReporte | null> {
-        return await Reporte.findByIdAndUpdate(id, data, {
+    //Admin puede actualizar cualquier reporte, usuario solo el suyo
+    async update(id: string, data: Partial<IReporte>, usuarioId: string, rol: string): Promise<IReporte | null> {
+        const filter = rol === 'administrador' ? { _id: id } : { _id: id, usuario: usuarioId };
+        return await Reporte.findOneAndUpdate(filter, data, {
             new: true, //Devuelve el documento actualizado
             runValidators: true, //Ejecuta las validaciones definidas en el Schema
         });
     },
 
-    //Elimino por su id
-    async delete(id: string): Promise<IReporte | null> {
-        return await Reporte.findByIdAndDelete(id);
+    //Admin puede eliminar cualquier reporte, usuario solo el suyo
+    async delete(id: string, usuarioId: string, rol: string): Promise<IReporte | null> {
+        const filter = rol === 'administrador' ? { _id: id } : { _id: id, usuario: usuarioId };
+        return await Reporte.findOneAndDelete(filter);
     },
 };

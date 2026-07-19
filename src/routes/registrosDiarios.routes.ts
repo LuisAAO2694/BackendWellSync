@@ -10,13 +10,14 @@ import {
     validateCreateRegistroDiario,
     validateUpdateRegistroDiario,
 } from '../middlewares/validators/registroDiario.validator';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', getAllRegistrosDiarios);
-router.get('/:id', getRegistroDiarioById);
-router.post('/', validateCreateRegistroDiario, createRegistroDiario);
-router.put('/:id', validateUpdateRegistroDiario, updateRegistroDiario);
-router.delete('/:id', deleteRegistroDiario);
+router.get('/', authenticate, getAllRegistrosDiarios);
+router.get('/:id', authenticate, getRegistroDiarioById);
+router.post('/', authenticate, validateCreateRegistroDiario, createRegistroDiario);
+router.put('/:id', authenticate, validateUpdateRegistroDiario, updateRegistroDiario);
+router.delete('/:id', authenticate, deleteRegistroDiario);
 
 export default router;

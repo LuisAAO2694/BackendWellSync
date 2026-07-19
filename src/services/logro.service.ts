@@ -1,31 +1,45 @@
 import { Logro, ILogro } from '../models/logro.model';
+import { notificacionService } from './notificacion.service';
 
 export const logroService = {
-    //Obtengo todos los logros
-    async getAll(): Promise<ILogro[]> {
-        return await Logro.find();
+    //Solo devuelve los logros del usuario autenticado
+    async getAll(usuarioId: string): Promise<ILogro[]> {
+        return await Logro.find({ usuario: usuarioId });
     },
 
-    //Busco por id el logro
-    async getById(id: string): Promise<ILogro | null> {
-        return await Logro.findById(id);
+    //Busca un logro por su id, solo si pertenece al usuario autenticado
+    async getById(id: string, usuarioId: string): Promise<ILogro | null> {
+        return await Logro.findOne({ _id: id, usuario: usuarioId });
     },
 
-    //Creo un logro
-    async create(data: Partial<ILogro>): Promise<ILogro> {
-        return await Logro.create(data);
+    //Crea un logro forzando el usuario del token por seguridad, y notifica al usuario
+    async create(data: Partial<ILogro>, usuarioId: string): Promise<ILogro> {
+        const logro = await Logro.create({ ...data, usuario: usuarioId });
+
+        try {
+            await notificacionService.crear(
+                usuarioId,
+                'logro',
+                `¡Has desbloqueado un logro: ${logro.tipo}!`,
+                logro._id.toString(),
+            );
+        } catch (e) {
+            console.error('Error al crear la notificación del logro:', e);
+        }
+
+        return logro;
     },
 
-    //Actualizo por su id
-    async update(id: string, data: Partial<ILogro>): Promise<ILogro | null> {
-        return await Logro.findByIdAndUpdate(id, data, {
+    //Actualiza un logro, solo si pertenece al usuario autenticado
+    async update(id: string, data: Partial<ILogro>, usuarioId: string): Promise<ILogro | null> {
+        return await Logro.findOneAndUpdate({ _id: id, usuario: usuarioId }, data, {
             new: true, //Devuelve el documento actualizado
             runValidators: true, //Ejecuta las validaciones definidas en el Schema
         });
     },
 
-    //Elimino por su id
-    async delete(id: string): Promise<ILogro | null> {
-        return await Logro.findByIdAndDelete(id);
+    //Elimina un logro, solo si pertenece al usuario autenticado
+    async delete(id: string, usuarioId: string): Promise<ILogro | null> {
+        return await Logro.findOneAndDelete({ _id: id, usuario: usuarioId });
     },
 };

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '../../types/http-status';
 
 //Esta es una expresion que usualemnte se usa para validar que un ID tenga el formato de un ObjectId de MongoDB
-const objectIdRegex = /^[a-f\d]{24}$/i;
+//const objectIdRegex = /^[a-f\d]{24}$/i;
 
 //Estados validos para un reporte
 const estadosValidos = ['abierto', 'en_proceso', 'resuelto'];
@@ -10,11 +10,7 @@ const estadosValidos = ['abierto', 'en_proceso', 'resuelto'];
 //Este middleware valida los datos necesarios para crear un reporte
 export function validateCreateReporte(req: Request, res: Response, next: NextFunction) {
     const errors: string[] = [];
-    const { usuario, tipo, descripcion, estado } = req.body;
-
-    if (!usuario || typeof usuario !== 'string' || !objectIdRegex.test(usuario)) {
-        errors.push('El ID del usuario es obligatorio y debe ser un ObjectId valido');
-    }
+    const { tipo, descripcion, estado } = req.body;
 
     if (!tipo || typeof tipo !== 'string' || tipo.trim().length === 0) {
         errors.push('El tipo de reporte es obligatorio');

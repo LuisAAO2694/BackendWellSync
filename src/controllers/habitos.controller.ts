@@ -5,21 +5,64 @@ import { AppError } from '../utils/utils';
 
 //Este es solo mi controlador recibir las peticiones HTTP que vienen de los habitos
 
-//Obtengo los habitos
+/**
+ * @openapi
+ * /api/habitos:
+ *   get:
+ *     tags: [Hábitos]
+ *     summary: Obtener todos los hábitos
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de hábitos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Habito'
+ */
+//Obtengo los habitos del usuario autenticado
 export async function getAllHabitos(req: Request, res: Response, next: NextFunction) {
     try {
-        const habitos = await habitoService.getAll();
+        const habitos = await habitoService.getAll(req.usuario!.id);
         res.json(habitos);
     } catch (e) {
         next(e);
     }
 }
 
-//Obtengo un habito por el id
+/**
+ * @openapi
+ * /api/habitos/{id}:
+ *   get:
+ *     tags: [Hábitos]
+ *     summary: Obtener un hábito por ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hábito
+ *     responses:
+ *       200:
+ *         description: Hábito encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Habito'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
+//Obtengo un habito por el id (solo si pertenece al usuario autenticado)
 export async function getHabitoById(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.getById(id);
+        const habito = await habitoService.getById(id, req.usuario!.id);
         if (!habito) {
             return next(new AppError('Habito no encontrado', HttpStatus.NOT_FOUND));
         }
@@ -29,21 +72,86 @@ export async function getHabitoById(req: Request, res: Response, next: NextFunct
     }
 }
 
-//Creo un nuevo habito
+/**
+ * @openapi
+ * /api/habitos:
+ *   post:
+ *     tags: [Hábitos]
+ *     summary: Crear un nuevo hábito
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateHabitoInput'
+ *     responses:
+ *       200:
+ *         description: Hábito creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Habito'
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ */
+//Creo un nuevo habito (asignando automaticamente el usuario del token)
 export async function createHabito(req: Request, res: Response, next: NextFunction) {
     try {
-        const habito = await habitoService.create(req.body);
+        const habito = await habitoService.create(req.body, req.usuario!.id);
         res.status(HttpStatus.SUCCESS).json(habito);
     } catch (e) {
         next(e);
     }
 }
 
-//Actualizo un habito que ya existe
+/**
+ * @openapi
+ * /api/habitos/{id}:
+ *   put:
+ *     tags: [Hábitos]
+ *     summary: Actualizar un hábito existente
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hábito
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateHabitoInput'
+ *     responses:
+ *       200:
+ *         description: Hábito actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Habito'
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
+//Actualizo un habito (solo si pertenece al usuario autenticado)
 export async function updateHabito(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.update(id, req.body);
+        const habito = await habitoService.update(id, req.body, req.usuario!.id);
 
         if (!habito) {
             return next(new AppError('Habito no encontrado', HttpStatus.NOT_FOUND));
@@ -55,11 +163,40 @@ export async function updateHabito(req: Request, res: Response, next: NextFuncti
     }
 }
 
-//Elimino el habito por el id
+/**
+ * @openapi
+ * /api/habitos/{id}:
+ *   delete:
+ *     tags: [Hábitos]
+ *     summary: Eliminar un hábito
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hábito
+ *     responses:
+ *       200:
+ *         description: Hábito eliminado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Hábito eliminado correctamente
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
+//Elimino el habito por el id (solo si pertenece al usuario autenticado)
 export async function deleteHabito(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const habito = await habitoService.delete(id);
+        const habito = await habitoService.delete(id, req.usuario!.id);
 
         if (!habito) {
             return next(new AppError('Hábito no encontrado', HttpStatus.NOT_FOUND));

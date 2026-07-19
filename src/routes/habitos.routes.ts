@@ -7,13 +7,14 @@ import {
     deleteHabito,
 } from '../controllers/habitos.controller';
 import { validateCreateHabito, validateUpdateHabito } from '../middlewares/validators/habito.validator';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', getAllHabitos);
-router.get('/:id', getHabitoById);
-router.post('/', validateCreateHabito, createHabito);
-router.put('/:id', validateUpdateHabito, updateHabito);
-router.delete('/:id', deleteHabito);
+router.get('/', authenticate, getAllHabitos);
+router.get('/:id', authenticate, getHabitoById);
+router.post('/', authenticate, validateCreateHabito, createHabito);
+router.put('/:id', authenticate, validateUpdateHabito, updateHabito);
+router.delete('/:id', authenticate, deleteHabito);
 
 export default router;

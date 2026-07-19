@@ -8,7 +8,7 @@ export function validateCreateUsuario(req: Request, res: Response, next: NextFun
     //Aqui hacemos un simple arreglo donde alamcenare los errores btw que se encuentren
     const errors: string[] = [];
     //Ya aqui obtengo los datos de la peticion
-    const { nombre, email, password, googleId, rol } = req.body;
+    const { nombre, email, password, googleId } = req.body;
 
     //Nombre
     if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0) {
@@ -25,11 +25,6 @@ export function validateCreateUsuario(req: Request, res: Response, next: NextFun
     //Btw este es caso particular si no inicia con google, la contraseña es obligatoria
     if (!googleId && (!password || typeof password !== 'string' || password.length < 8)) {
         errors.push('La contraseña debe tener al menos 8 caracteres');
-    }
-
-    //Valido que el rol sea uno de los que estan permitidos
-    if (rol && !['usuario', 'administrador'].includes(rol)) {
-        errors.push('Rol no vlido. Debe ser "usuario" o "administrador"');
     }
 
     //Y ya si existe un error me devuelve la lista
@@ -70,6 +65,54 @@ export function validateUpdateUsuario(req: Request, res: Response, next: NextFun
 
     if (rol !== undefined && !['usuario', 'administrador'].includes(rol)) {
         errors.push('Rol no valido. Debe ser "usuario" o "administrador"');
+    }
+
+    if (errors.length > 0) {
+        res.status(HttpStatus.BAD_REQUEST).json({ errors });
+        return;
+    }
+
+    next();
+}
+
+//Este es mi middleware que valida los datos para solicitar el reset de la contraseña
+export function validateForgotPassword(req: Request, res: Response, next: NextFunction) {
+    //Mi arreglo de errores
+    const errors: string[] = [];
+    //Obtengo el mail
+    const { email } = req.body;
+
+    //Checo que el correo exista, sea texto y no este vacio
+    if (!email || typeof email !== 'string' || email.trim().length === 0) {
+        errors.push('El email es obligatorio');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        //formato
+        errors.push('Email no válido');
+    }
+
+    //Si existen errores, lo devuelvo en res
+    if (errors.length > 0) {
+        res.status(HttpStatus.BAD_REQUEST).json({ errors });
+        return;
+    }
+    //Sigo...
+    next();
+}
+
+//Este es mi otro middleare que valida los datos para restablecer la pass
+export function validateResetPassword(req: Request, res: Response, next: NextFunction) {
+    const errors: string[] = [];
+    //Aqui obtengo el token y la nueva contrasela enviados en la peticion
+    const { token, password } = req.body;
+
+    //Checo que el token exista y no este vacio nomas
+    if (!token || typeof token !== 'string' || token.trim().length === 0) {
+        errors.push('El token es obligatorio');
+    }
+
+    //Checo que la password exista y tenga al menos las condiciones necesarias
+    if (!password || typeof password !== 'string' || password.length < 8) {
+        errors.push('La nueva contraseña debe tener al menos 8 caracteres');
     }
 
     if (errors.length > 0) {

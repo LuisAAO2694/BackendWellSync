@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 
+seed.ts
 pnpm-lock.yaml
 .DS_Store
 *.log

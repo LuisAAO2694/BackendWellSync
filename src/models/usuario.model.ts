@@ -10,8 +10,11 @@ export interface IUsuario extends Document {
     password?: string;
     googleId?: string;
     fotoPerfil?: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
     rol: 'usuario' | 'administrador';
     fechaRegistro: Date;
+    comparePassword(password: string): Promise<boolean>;
 }
 
 //Este en si es el esquema que define como se almacenan los usuarios en la bd
@@ -37,6 +40,12 @@ const usuarioSchema = new Schema<IUsuario>({
     },
     fotoPerfil: {
         type: String,
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
     },
     rol: {
         type: String,

@@ -2,16 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '../../types/http-status';
 
 //Esta es una expresion que usualemnte se usa para validar que un ID tenga el formato de un ObjectId de MongoDB
-const objectIdRegex = /^[a-f\d]{24}$/i;
+//const objectIdRegex = /^[a-f\d]{24}$/i;
 
 //Este middleware mas que nada se encarga de validar los datos para crear un entrenamiento
 export function validateCreateEntrenamiento(req: Request, res: Response, next: NextFunction) {
     const errors: string[] = [];
-    const { usuario, fecha, hora, estado, notasGenerales, ejercicios } = req.body;
-
-    if (!usuario || typeof usuario !== 'string' || !objectIdRegex.test(usuario)) {
-        errors.push('El ID del usuario es obligatorio y debe ser un ObjectId valido');
-    }
+    const { fecha, hora, estado, notasGenerales, ejercicios } = req.body;
 
     if (!fecha) {
         errors.push('La fecha es obligatoria');

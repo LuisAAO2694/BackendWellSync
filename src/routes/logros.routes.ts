@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { getAllLogros, getLogroById, createLogro, updateLogro, deleteLogro } from '../controllers/logros.controller';
 import { validateCreateLogro, validateUpdateLogro } from '../middlewares/validators/logro.validator';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', getAllLogros);
-router.get('/:id', getLogroById);
-router.post('/', validateCreateLogro, createLogro);
-router.put('/:id', validateUpdateLogro, updateLogro);
-router.delete('/:id', deleteLogro);
+router.get('/', authenticate, getAllLogros);
+router.get('/:id', authenticate, getLogroById);
+router.post('/', authenticate, validateCreateLogro, createLogro);
+router.put('/:id', authenticate, validateUpdateLogro, updateLogro);
+router.delete('/:id', authenticate, deleteLogro);
 
 export default router;
