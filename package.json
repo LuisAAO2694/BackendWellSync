@@ -4,8 +4,7 @@
   "description": "Backend REST API para WellSync — ITESO Tecnologías de Desarrollo en el Servidor",
   "main": "dist/index.js",
   "scripts": {
-    "_comentario_": "dejamos el --passWithNoTests por mientras, porque todavia no tenemos tests",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "scripts": "node build.js",
     "build": "pnpm scripts",
     "build:clean": "rimraf dist && pnpm run build",

@@ -9,4 +9,5 @@ module.exports = {
     transform: {
         ...tsJestTransformCfg,
     },
+    setupFiles: ['./src/test/setup.ts'],
 };
