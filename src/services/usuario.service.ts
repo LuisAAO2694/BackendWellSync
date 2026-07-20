@@ -5,6 +5,7 @@ import { AppError } from '../utils/utils';
 import { HttpStatus } from '../types/http-status';
 import crypto from 'crypto'; //Operacion criptografica
 import { emailService } from './email.service';
+import { verifyGoogleToken } from '../config/google';
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -133,5 +134,50 @@ export const usuarioService = {
         await usuario.save();
 
         return { message: 'Contraseña actualizada correctamente' };
+    },
+
+    //Aqui solo es mi inicio de sesion con google
+    async googleLogin(idToken: string): Promise<{ token: string }> {
+        //Checo que el idtoken de google sea valido y obtengo la info del user
+        const profile = await verifyGoogleToken(idToken);
+
+        //Busco el usuarios asociado 
+        let usuario = await Usuario.findOne({ googleId: profile.googleId });
+
+        //Si no existe 
+        if (!usuario) {
+            //Busco si ya existe uno registrado con el mismo correo
+            usuario = await Usuario.findOne({ email: profile.email });
+            if (usuario) {
+
+                //Vinculo la cuenta existente con google 
+                usuario.googleId = profile.googleId;
+
+                //Actualizo la foto de perfil si es que tiene una 
+                if (profile.fotoPerfil) usuario.fotoPerfil = profile.fotoPerfil;
+                
+                //Guardo los cambios
+                await usuario.save();
+            } else {
+
+                //Si el usuario no existe, pues le creo nueva cuenta
+                usuario = await Usuario.create({
+                    nombre: profile.nombre,
+                    email: profile.email,
+                    googleId: profile.googleId,
+                    fotoPerfil: profile.fotoPerfil,
+                });
+            }
+        }
+
+        //Genera un token JWT para autenticar al usuario en la aplicacion
+        const token = jwt.sign(
+            { id: usuario._id, rol: usuario.rol },
+            jwtConfig.secret,
+            { expiresIn: jwtConfig.expiresIn },
+        );
+
+        //Devuelvo el token generado
+        return { token };
     },
 };

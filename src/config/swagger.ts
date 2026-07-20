@@ -291,6 +291,13 @@ const options: swaggerJsdoc.Options = {
                         password: { type: 'string', minLength: 8 },
                     },
                 },
+                GoogleLoginInput: {
+                    type: 'object',
+                    required: ['idToken'],
+                    properties: {
+                        idToken: { type: 'string', description: 'Token de Google (credential) obtenido del frontend' },
+                    },
+                },
             },
             responses: {
                 Unauthorized: {

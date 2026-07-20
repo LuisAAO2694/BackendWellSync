@@ -8,18 +8,21 @@ import {
     login,
     forgotPassword,
     resetPassword,
+    googleLogin,
 } from '../controllers/usuarios.controller';
 import {
     validateCreateUsuario,
     validateUpdateUsuario,
     validateForgotPassword,
     validateResetPassword,
+    validateGoogleLogin,
 } from '../middlewares/validators/usuario.validator';
 import { authenticate, authorize } from '../middlewares/auth';
 
 const router = Router();
 
 router.post('/login', login);
+router.post('/google', validateGoogleLogin, googleLogin)
 router.get('/', authenticate, authorize('administrador'), getAllUsuarios);
 router.get('/:id', authenticate, getUsuarioById);
 router.post('/', validateCreateUsuario, createUsuario);

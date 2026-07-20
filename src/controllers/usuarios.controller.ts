@@ -313,3 +313,38 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
         next(e);
     }
 }
+
+/**
+ * @openapi
+ * /api/usuarios/google:
+ *   post:
+ *     tags: [Usuarios]
+ *     summary: Iniciar sesión o registrarse con Google
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GoogleLoginInput'
+ *     responses:
+ *       200:
+ *         description: Login exitoso, devuelve el token JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
+//Controlador solo para procesar la solicitud de inicio de sesion con google
+export async function googleLogin(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { idToken } = req.body;
+        const result = await usuarioService.googleLogin(idToken);
+        res.json(result);
+    } 
+    catch (e) 
+    {
+        next(e);
+    }
+}
