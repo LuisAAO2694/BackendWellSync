@@ -298,6 +298,36 @@ const options: swaggerJsdoc.Options = {
                         idToken: { type: 'string', description: 'Token de Google (credential) obtenido del frontend' },
                     },
                 },
+                EjercicioResumen: {
+                    type: 'object',
+                    properties: {
+                        exerciseId: { type: 'string' },
+                        name: { type: 'string' },
+                        imageUrl: { type: 'string' },
+                    },
+                },
+                EjercicioDetalle: {
+                    type: 'object',
+                    properties: {
+                        exerciseId: { type: 'string' },
+                        name: { type: 'string' },
+                        equipments: { type: 'array', items: { type: 'string' } },
+                        bodyParts: { type: 'array', items: { type: 'string' } },
+                        targetMuscles: { type: 'array', items: { type: 'string' } },
+                        instructions: { type: 'array', items: { type: 'string' } },
+                        imageUrl: { type: 'string' },
+                        videoUrl: { type: 'string' },
+                    },
+                },
+                CaloriaQuemada: {
+                    type: 'object',
+                    properties: {
+                        activity: { type: 'string' },
+                        calories_per_hour: { type: 'number' },
+                        duration_minutes: { type: 'number' },
+                        total_calories: { type: 'number' },
+                    },
+                },
             },
             responses: {
                 Unauthorized: {
