@@ -1,5 +1,3 @@
-import { jwtConfig } from '../jwt';
-
 const originalEnv = process.env;
 
 describe('jwtConfig', () => {
@@ -16,6 +14,7 @@ describe('jwtConfig', () => {
         process.env.JWT_SECRET = 'test-secret';
         process.env.JWT_EXPIRES_IN = '1h';
 
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { jwtConfig: config } = require('../jwt');
         expect(config.secret).toBe('test-secret');
         expect(config.expiresIn).toBe('1h');

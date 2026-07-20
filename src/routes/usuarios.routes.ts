@@ -22,7 +22,7 @@ import { authenticate, authorize } from '../middlewares/auth';
 const router = Router();
 
 router.post('/login', login);
-router.post('/google', validateGoogleLogin, googleLogin)
+router.post('/google', validateGoogleLogin, googleLogin);
 router.get('/', authenticate, authorize('administrador'), getAllUsuarios);
 router.get('/:id', authenticate, getUsuarioById);
 router.post('/', validateCreateUsuario, createUsuario);

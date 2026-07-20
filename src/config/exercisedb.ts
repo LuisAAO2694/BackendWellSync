@@ -15,7 +15,6 @@ const client = axios.create({
 
 //Esta en si solo es una funcion generica para hacer las peticiones a la API
 export async function fetchExercisedb<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-    
     //Peticion a mi endpoint indicado, junto con mis params
     const response = await client.get(endpoint, { params });
     return response.data;

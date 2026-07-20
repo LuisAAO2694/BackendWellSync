@@ -6,17 +6,7 @@ import {
     validateGoogleLogin,
 } from '../usuario.validator';
 import { HttpStatus } from '../../../types/http-status';
-
-function mockReq(body: any) {
-    return { body } as any;
-}
-
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-}
+import { mockReq, mockRes } from '../../../test/test-utils';
 
 const mockNext = jest.fn();
 
@@ -62,7 +52,9 @@ describe('validateCreateUsuario', () => {
         const res = mockRes();
         validateCreateUsuario(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['La contraseña debe tener al menos 8 caracteres']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['La contraseña debe tener al menos 8 caracteres']),
+        });
     });
 });
 
@@ -102,7 +94,9 @@ describe('validateUpdateUsuario', () => {
         const res = mockRes();
         validateUpdateUsuario(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['La contraseña debe tener al menos 8 caracteres']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['La contraseña debe tener al menos 8 caracteres']),
+        });
     });
 
     it('debe rechazar rol inválido', () => {
@@ -110,7 +104,9 @@ describe('validateUpdateUsuario', () => {
         const res = mockRes();
         validateUpdateUsuario(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Rol no valido. Debe ser "usuario" o "administrador"']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Rol no valido. Debe ser "usuario" o "administrador"']),
+        });
     });
 
     it('debe aceptar rol válido', () => {
@@ -167,7 +163,9 @@ describe('validateResetPassword', () => {
         const res = mockRes();
         validateResetPassword(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['La nueva contraseña debe tener al menos 8 caracteres']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['La nueva contraseña debe tener al menos 8 caracteres']),
+        });
     });
 });
 
@@ -184,6 +182,8 @@ describe('validateGoogleLogin', () => {
         const res = mockRes();
         validateGoogleLogin(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El idToken de Google es obligatorio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El idToken de Google es obligatorio']),
+        });
     });
 });

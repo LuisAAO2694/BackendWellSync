@@ -1,18 +1,22 @@
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { authenticate, authorize, JwtPayload } from '../auth';
 import { HttpStatus } from '../../types/http-status';
 
 jest.mock('jsonwebtoken');
 
-function mockReq(headers?: any, usuario?: JwtPayload) {
-    return { headers: headers || {}, usuario } as any;
+function mockReq(headers: Record<string, string> = {}, usuario?: JwtPayload): Request {
+    return { headers, usuario } as unknown as Request;
 }
 
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
+function mockRes(): Response {
+    const res: Record<string, jest.Mock> = {
+        status: jest.fn(),
+        json: jest.fn(),
+    };
+    res.status.mockReturnValue(res);
+    res.json.mockReturnValue(res);
+    return res as unknown as Response;
 }
 
 const mockNext = jest.fn();

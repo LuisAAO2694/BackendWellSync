@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { calcularCalorias } from "../controllers/calorias.controller";
-import { authenticate } from "../middlewares/auth";
+import { Router } from 'express';
+import { calcularCalorias } from '../controllers/calorias.controller';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 

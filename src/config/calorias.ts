@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 //Obtengo mis APIs del env
 const apiKey = process.env.CALORIAS_API_KEY!;

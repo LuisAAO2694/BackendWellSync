@@ -1,4 +1,4 @@
-import {OAuth2Client} from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 
 //Aqui solo obtengo mi ID de google desde el .env
 const clientId = process.env.GOOGLE_CLIENT_ID!;
@@ -15,7 +15,6 @@ export interface GoogleProfile {
 
 //En esta funcion solo checo que el token que vino desde google sea valido y me de la info del user
 export async function verifyGoogleToken(idToken: string): Promise<GoogleProfile> {
-    
     //Checa el token recibido utilizando el cliente
     const ticket = await client.verifyIdToken({
         idToken,
@@ -24,7 +23,7 @@ export async function verifyGoogleToken(idToken: string): Promise<GoogleProfile>
     //Obtengo la info del token
     const payload = ticket.getPayload()!;
 
-    //Me devuelve datso del usuarios 
+    //Me devuelve datso del usuarios
     return {
         googleId: payload.sub,
         email: payload.email!,

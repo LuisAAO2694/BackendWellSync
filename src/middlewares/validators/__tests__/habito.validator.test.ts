@@ -1,18 +1,11 @@
-import {
-    validateCreateHabito,
-    validateUpdateHabito,
-} from '../habito.validator';
+import { validateCreateHabito, validateUpdateHabito } from '../habito.validator';
+import { mockReq, mockRes } from '../../../test/test-utils';
 
-function mockReq(body: any) { return { body } as any; }
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-}
 const mockNext = jest.fn();
 
-beforeEach(() => { mockNext.mockClear(); });
+beforeEach(() => {
+    mockNext.mockClear();
+});
 
 describe('validateCreateHabito', () => {
     it('debe pasar con datos válidos', () => {
@@ -27,7 +20,9 @@ describe('validateCreateHabito', () => {
         const res = mockRes();
         validateCreateHabito(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El nombre del habito es obligatorio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El nombre del habito es obligatorio']),
+        });
     });
 
     it('debe rechazar si falta categoria', () => {
@@ -48,7 +43,9 @@ describe('validateCreateHabito', () => {
         const req = mockReq({ nombre: 'Beber agua', categoria: 'Salud', metaDiaria: '8 vasos', activo: 'si' });
         const res = mockRes();
         validateCreateHabito(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El campo activo debe ser un booleano']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El campo activo debe ser un booleano']),
+        });
     });
 
     it('debe aceptar activo como booleano', () => {
@@ -78,6 +75,8 @@ describe('validateUpdateHabito', () => {
         const req = mockReq({ activo: 'true' });
         const res = mockRes();
         validateUpdateHabito(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El campo activo debe ser un booleano']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El campo activo debe ser un booleano']),
+        });
     });
 });

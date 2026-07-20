@@ -1,18 +1,11 @@
-import {
-    validateCreateEntrenamiento,
-    validateUpdateEntrenamiento,
-} from '../entrenamiento.validator';
+import { validateCreateEntrenamiento, validateUpdateEntrenamiento } from '../entrenamiento.validator';
+import { mockReq, mockRes } from '../../../test/test-utils';
 
-function mockReq(body: any) { return { body } as any; }
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-}
 const mockNext = jest.fn();
 
-beforeEach(() => { mockNext.mockClear(); });
+beforeEach(() => {
+    mockNext.mockClear();
+});
 
 const ejercicioValido = { exerciseId: 'exr_123', nombre: 'Bench Press', series: 3, repeticiones: 10 };
 
@@ -49,35 +42,49 @@ describe('validateCreateEntrenamiento', () => {
         const req = mockReq({ fecha: '2026-07-20', hora: '10:00', estado: 'en_curso', ejercicios: [ejercicioValido] });
         const res = mockRes();
         validateCreateEntrenamiento(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Estado no valido. Debe ser "pendiente" o "completado"']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Estado no valido. Debe ser "pendiente" o "completado"']),
+        });
     });
 
     it('debe rechazar si no hay ejercicios', () => {
         const req = mockReq({ fecha: '2026-07-20', hora: '10:00', ejercicios: [] });
         const res = mockRes();
         validateCreateEntrenamiento(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Debe incluir al menos un ejercicio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Debe incluir al menos un ejercicio']),
+        });
     });
 
     it('debe rechazar ejercicio sin exerciseId', () => {
-        const req = mockReq({ fecha: '2026-07-20', hora: '10:00', ejercicios: [{ nombre: 'Press', series: 3, repeticiones: 10 }] });
+        const req = mockReq({
+            fecha: '2026-07-20',
+            hora: '10:00',
+            ejercicios: [{ nombre: 'Press', series: 3, repeticiones: 10 }],
+        });
         const res = mockRes();
         validateCreateEntrenamiento(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Ejercicio 1: exerciseId es obligatorio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Ejercicio 1: exerciseId es obligatorio']),
+        });
     });
 
     it('debe rechazar ejercicio con series menor a 1', () => {
         const req = mockReq({ fecha: '2026-07-20', hora: '10:00', ejercicios: [{ ...ejercicioValido, series: 0 }] });
         const res = mockRes();
         validateCreateEntrenamiento(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Ejercicio 1: series debe ser un número mayor a 0']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Ejercicio 1: series debe ser un número mayor a 0']),
+        });
     });
 
     it('debe rechazar peso negativo', () => {
         const req = mockReq({ fecha: '2026-07-20', hora: '10:00', ejercicios: [{ ...ejercicioValido, peso: -5 }] });
         const res = mockRes();
         validateCreateEntrenamiento(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Ejercicio 1: peso no puede ser negativo']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Ejercicio 1: peso no puede ser negativo']),
+        });
     });
 });
 

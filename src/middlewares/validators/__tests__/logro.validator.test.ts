@@ -1,18 +1,11 @@
-import {
-    validateCreateLogro,
-    validateUpdateLogro,
-} from '../logro.validator';
+import { validateCreateLogro, validateUpdateLogro } from '../logro.validator';
+import { mockReq, mockRes } from '../../../test/test-utils';
 
-function mockReq(body: any) { return { body } as any; }
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-}
 const mockNext = jest.fn();
 
-beforeEach(() => { mockNext.mockClear(); });
+beforeEach(() => {
+    mockNext.mockClear();
+});
 
 describe('validateCreateLogro', () => {
     it('debe pasar con datos válidos', () => {
@@ -40,7 +33,9 @@ describe('validateCreateLogro', () => {
         const req = mockReq({ tipo: 'Racha', habitoRelacionado: 'id-invalido' });
         const res = mockRes();
         validateCreateLogro(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El hábito relacionado debe ser un ObjectId valido']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El hábito relacionado debe ser un ObjectId valido']),
+        });
     });
 
     it('debe aceptar habitoRelacionado como ObjectId válido', () => {
@@ -63,6 +58,8 @@ describe('validateUpdateLogro', () => {
         const req = mockReq({ tipo: '' });
         const res = mockRes();
         validateUpdateLogro(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El tipo de logro no puede estar vacio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El tipo de logro no puede estar vacio']),
+        });
     });
 });

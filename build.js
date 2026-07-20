@@ -7,6 +7,7 @@ esbuild
         platform: 'node',
         target: 'node2022',
         outfile: 'dist/index.js',
+        external: ['bcrypt'],
         sourcemap: false,
         minify: true,
     })

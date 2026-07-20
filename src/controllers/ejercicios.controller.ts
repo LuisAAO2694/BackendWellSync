@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { ejercicioService } from "../services/ejercicios.service";
+import { NextFunction, Request, Response } from 'express';
+import { ejercicioService } from '../services/ejercicios.service';
 
 /**
  * @openapi
@@ -33,7 +33,7 @@ import { ejercicioService } from "../services/ejercicios.service";
 //Mi controlador que solo busca ejercicios, si hay texto
 export async function buscarEjercicios(req: Request, res: Response, next: NextFunction) {
     try {
-        //Obtengo el paramtro de de busq enviado en la url 
+        //Obtengo el paramtro de de busq enviado en la url
         const { q } = req.query;
 
         //Checo que exista
@@ -108,11 +108,11 @@ export async function buscarEjercicios(req: Request, res: Response, next: NextFu
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-//Este otro controlador obtiene una lista de ejercicios aplicando los filtros 
+//Este otro controlador obtiene una lista de ejercicios aplicando los filtros
 export async function listarEjercicios(req: Request, res: Response, next: NextFunction) {
     try {
         const { name, bodyParts, equipments, targetMuscles, limit } = req.query as Record<string, string | undefined>;
-        
+
         //Este es mi objeto donde alamacenare solo los filtros enviados
         const filtros: Record<string, string> = {};
         if (name) filtros.name = name;

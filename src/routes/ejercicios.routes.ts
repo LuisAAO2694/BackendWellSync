@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { buscarEjercicios, listarEjercicios, getEjercicioPorId } from "../controllers/ejercicios.controller";
-import { authenticate } from "../middlewares/auth";
+import { Router } from 'express';
+import { buscarEjercicios, listarEjercicios, getEjercicioPorId } from '../controllers/ejercicios.controller';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 

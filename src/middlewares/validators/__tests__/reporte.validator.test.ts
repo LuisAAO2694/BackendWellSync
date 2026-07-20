@@ -1,18 +1,11 @@
-import {
-    validateCreateReporte,
-    validateUpdateReporte,
-} from '../reporte.validator';
+import { validateCreateReporte, validateUpdateReporte } from '../reporte.validator';
+import { mockReq, mockRes } from '../../../test/test-utils';
 
-function mockReq(body: any) { return { body } as any; }
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-}
 const mockNext = jest.fn();
 
-beforeEach(() => { mockNext.mockClear(); });
+beforeEach(() => {
+    mockNext.mockClear();
+});
 
 describe('validateCreateReporte', () => {
     it('debe pasar con datos válidos', () => {
@@ -26,7 +19,9 @@ describe('validateCreateReporte', () => {
         const req = mockReq({ descripcion: 'Error' });
         const res = mockRes();
         validateCreateReporte(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['El tipo de reporte es obligatorio']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['El tipo de reporte es obligatorio']),
+        });
     });
 
     it('debe rechazar si falta descripcion', () => {
@@ -40,7 +35,9 @@ describe('validateCreateReporte', () => {
         const req = mockReq({ tipo: 'Bug', descripcion: 'Error', estado: 'inexistente' });
         const res = mockRes();
         validateCreateReporte(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Estado no valido. Debe ser uno de: abierto, en_proceso, resuelto']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Estado no valido. Debe ser uno de: abierto, en_proceso, resuelto']),
+        });
     });
 
     it('debe aceptar estado válido', () => {
@@ -63,6 +60,8 @@ describe('validateUpdateReporte', () => {
         const req = mockReq({ estado: 'cancelado' });
         const res = mockRes();
         validateUpdateReporte(req, res, mockNext);
-        expect(res.json).toHaveBeenCalledWith({ errors: expect.arrayContaining(['Estado no valido. Debe ser uno de: abierto, en_proceso, resuelto']) });
+        expect(res.json).toHaveBeenCalledWith({
+            errors: expect.arrayContaining(['Estado no valido. Debe ser uno de: abierto, en_proceso, resuelto']),
+        });
     });
 });

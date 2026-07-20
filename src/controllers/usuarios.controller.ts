@@ -342,9 +342,7 @@ export async function googleLogin(req: Request, res: Response, next: NextFunctio
         const { idToken } = req.body;
         const result = await usuarioService.googleLogin(idToken);
         res.json(result);
-    } 
-    catch (e) 
-    {
+    } catch (e) {
         next(e);
     }
 }

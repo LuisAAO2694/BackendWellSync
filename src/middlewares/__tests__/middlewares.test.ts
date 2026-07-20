@@ -2,12 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import { errorHandler } from '../middlewares';
 import { AppError } from '../../utils/utils';
 
-function mockReq() { return {} as Request; }
-function mockRes() {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
+function mockReq(): Request {
+    return {} as unknown as Request;
+}
+function mockRes(): Response {
+    const res: Record<string, jest.Mock> = {
+        status: jest.fn(),
+        json: jest.fn(),
+    };
+    res.status.mockReturnValue(res);
+    res.json.mockReturnValue(res);
+    return res as unknown as Response;
 }
 const mockNext = jest.fn() as NextFunction;
 

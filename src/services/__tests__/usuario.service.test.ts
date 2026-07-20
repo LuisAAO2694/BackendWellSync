@@ -57,9 +57,9 @@ describe('getById', () => {
     });
 
     it('usuario normal no puede ver otro perfil', async () => {
-        await expect(
-            usuarioService.getById('otro-user', 'user123', 'usuario'),
-        ).rejects.toThrow('No tienes permisos para ver este perfil');
+        await expect(usuarioService.getById('otro-user', 'user123', 'usuario')).rejects.toThrow(
+            'No tienes permisos para ver este perfil',
+        );
     });
 });
 
@@ -119,7 +119,12 @@ describe('login', () => {
 });
 
 describe('googleLogin', () => {
-    const googleProfile = { googleId: 'google-123', email: 'juan@gmail.com', nombre: 'Juan Google', fotoPerfil: 'https://photo.url' };
+    const googleProfile = {
+        googleId: 'google-123',
+        email: 'juan@gmail.com',
+        nombre: 'Juan Google',
+        fotoPerfil: 'https://photo.url',
+    };
 
     it('debe loguear usuario existente por googleId', async () => {
         const existingUser = { ...mockUsuario, _id: 'user123', googleId: 'google-123' };
@@ -174,17 +179,19 @@ describe('forgotPassword', () => {
     });
 
     it('debe generar token y enviar email si el usuario existe', async () => {
-        const user = { ...mockUsuario, save: jest.fn(), resetPasswordToken: undefined, resetPasswordExpires: undefined };
+        const user = {
+            ...mockUsuario,
+            save: jest.fn(),
+            resetPasswordToken: undefined,
+            resetPasswordExpires: undefined,
+        };
         (Usuario.findOne as jest.Mock).mockResolvedValue(user);
         (emailService.sendResetPasswordEmail as jest.Mock).mockResolvedValue(undefined);
 
         const result = await usuarioService.forgotPassword('juan@test.com');
         expect(result).toEqual({ message: 'Si el correo existe, recibirás un enlace de recuperación' });
         expect(user.save).toHaveBeenCalled();
-        expect(emailService.sendResetPasswordEmail).toHaveBeenCalledWith(
-            'juan@test.com',
-            expect.any(String),
-        );
+        expect(emailService.sendResetPasswordEmail).toHaveBeenCalledWith('juan@test.com', expect.any(String));
     });
 });
 
@@ -233,9 +240,9 @@ describe('update', () => {
     });
 
     it('usuario normal no puede actualizar otro perfil', async () => {
-        await expect(
-            usuarioService.update('otro-user', { nombre: 'Hack' }, 'user123', 'usuario'),
-        ).rejects.toThrow('No tienes permisos para actualizar este perfil');
+        await expect(usuarioService.update('otro-user', { nombre: 'Hack' }, 'user123', 'usuario')).rejects.toThrow(
+            'No tienes permisos para actualizar este perfil',
+        );
     });
 
     it('debe devolver null si el usuario no existe', async () => {
