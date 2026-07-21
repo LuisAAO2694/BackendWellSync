@@ -5,7 +5,7 @@ export const emailService = {
     //Envio un correo con el enlace para restablecer la contraseña
     async sendResetPasswordEmail(to: string, token: string): Promise<void> {
         //Url que utiliza el usuario para hacer el reset de la contraseña
-        const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+        const resetUrl = `https://frontendwellsync.onrender.com/reset-password?token=${token}`;
 
         //Envio el correo utilzando la configuracion del transporter
         await transporter.sendMail({
