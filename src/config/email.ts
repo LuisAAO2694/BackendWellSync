@@ -9,7 +9,7 @@ export const transporter = nodemailer.createTransport({
     port: Number(process.env.SMTP_PORT),
 
     //En si esto indica si la conxion usa ssl
-    secure: false,
+    secure: true,
 
     //Las credenciales para autenticarse en el servidor SMTP
     auth: {
