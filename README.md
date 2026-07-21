@@ -145,3 +145,5 @@ Ninguna de las aplicaciones anteriores combina en un solo lugar el seguimiento d
 ---
 
 [Ir al Diseño Inicial de Base de Datos](designBdNosql.md)
+
+[Ir al Documentación final](DOCUMENTACION.md)
