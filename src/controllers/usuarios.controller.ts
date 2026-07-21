@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import cloudinary from '../config/cloudinary';
 import { usuarioService } from '../services/usuario.service';
 import { HttpStatus } from '../types/http-status';
 import { AppError } from '../utils/utils';
@@ -396,9 +397,19 @@ export async function subirFotoPerfil(req: Request, res: Response, next: NextFun
         }
 
         const { id } = req.params;
+
+        const result = await cloudinary.uploader.upload(
+            `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`,
+            {
+                folder: 'wellsync/perfiles',
+                public_id: `${id}-${Date.now()}`,
+            },
+        );
+
         const usuario = await usuarioService.actualizarFotoPerfil(
             id,
-            req.file.filename,
+            result.secure_url,
+            result.public_id,
             req.usuario!.id,
             req.usuario!.rol,
         );

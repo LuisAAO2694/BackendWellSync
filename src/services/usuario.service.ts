@@ -6,8 +6,12 @@ import { HttpStatus } from '../types/http-status';
 import crypto from 'crypto'; //Operacion criptografica
 import { emailService } from './email.service';
 import { verifyGoogleToken } from '../config/google';
-import fs from 'fs';
-import path from 'path';
+import cloudinary from '../config/cloudinary';
+
+function extractPublicIdFromUrl(url: string): string | null {
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
+    return match ? match[1] : null;
+}
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -182,7 +186,8 @@ export const usuarioService = {
     //Actualiza la foto de perfil subida por multer, solo si el usuario es dueño o admin
     async actualizarFotoPerfil(
         id: string,
-        filename: string,
+        fotoUrl: string,
+        publicId: string,
         usuarioId: string,
         rol: string,
     ): Promise<IUsuario | null> {
@@ -193,15 +198,15 @@ export const usuarioService = {
         const usuario = await Usuario.findById(id);
         if (!usuario) return null;
 
-        //Si ya tenia una foto subida por este mismo endpoint (no una URL externa de Google), la borro
-        if (usuario.fotoPerfil && usuario.fotoPerfil.startsWith('/uploads/')) {
-            const rutaAnterior = path.join(process.cwd(), usuario.fotoPerfil);
-            fs.unlink(rutaAnterior, () => {
-                //No importa si falla (ej. el archivo ya no existe), no debe tumbar la actualizacion
-            });
+        //Borrar foto anterior de Cloudinary si existe
+        if (usuario.fotoPerfil && usuario.fotoPerfil.includes('cloudinary')) {
+            const oldPublicId = extractPublicIdFromUrl(usuario.fotoPerfil);
+            if (oldPublicId) {
+                cloudinary.uploader.destroy(oldPublicId, () => {});
+            }
         }
 
-        usuario.fotoPerfil = `/uploads/${filename}`;
+        usuario.fotoPerfil = fotoUrl;
         await usuario.save();
 
         return await Usuario.findById(usuario._id).select('-password');
