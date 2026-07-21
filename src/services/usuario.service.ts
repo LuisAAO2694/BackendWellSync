@@ -6,6 +6,8 @@ import { HttpStatus } from '../types/http-status';
 import crypto from 'crypto'; //Operacion criptografica
 import { emailService } from './email.service';
 import { verifyGoogleToken } from '../config/google';
+import fs from 'fs';
+import path from 'path';
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -175,5 +177,33 @@ export const usuarioService = {
 
         //Devuelvo el token generado
         return { token };
+    },
+
+    //Actualiza la foto de perfil subida por multer, solo si el usuario es dueño o admin
+    async actualizarFotoPerfil(
+        id: string,
+        filename: string,
+        usuarioId: string,
+        rol: string,
+    ): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para actualizar este perfil', HttpStatus.FORBIDDEN);
+        }
+
+        const usuario = await Usuario.findById(id);
+        if (!usuario) return null;
+
+        //Si ya tenia una foto subida por este mismo endpoint (no una URL externa de Google), la borro
+        if (usuario.fotoPerfil && usuario.fotoPerfil.startsWith('/uploads/')) {
+            const rutaAnterior = path.join(process.cwd(), usuario.fotoPerfil);
+            fs.unlink(rutaAnterior, () => {
+                //No importa si falla (ej. el archivo ya no existe), no debe tumbar la actualizacion
+            });
+        }
+
+        usuario.fotoPerfil = `/uploads/${filename}`;
+        await usuario.save();
+
+        return await Usuario.findById(usuario._id).select('-password');
     },
 };
