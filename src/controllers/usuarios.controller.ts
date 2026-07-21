@@ -346,3 +346,69 @@ export async function googleLogin(req: Request, res: Response, next: NextFunctio
         next(e);
     }
 }
+
+/**
+ * @openapi
+ * /api/usuarios/{id}/foto-perfil:
+ *   post:
+ *     tags: [Usuarios]
+ *     summary: Subir o reemplazar la foto de perfil de un usuario
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [foto]
+ *             properties:
+ *               foto:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen JPG, PNG o WEBP, máximo 2MB
+ *     responses:
+ *       200:
+ *         description: Foto de perfil actualizada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
+//Sube la foto de perfil (admin sube cualquiera, user solo la suya)
+export async function subirFotoPerfil(req: Request, res: Response, next: NextFunction) {
+    try {
+        if (!req.file) {
+            return next(new AppError('No se envió ningún archivo', HttpStatus.BAD_REQUEST));
+        }
+
+        const { id } = req.params;
+        const usuario = await usuarioService.actualizarFotoPerfil(
+            id,
+            req.file.filename,
+            req.usuario!.id,
+            req.usuario!.rol,
+        );
+
+        if (!usuario) {
+            return next(new AppError('Usuario no encontrado', HttpStatus.NOT_FOUND));
+        }
+
+        res.json(usuario);
+    } catch (e) {
+        next(e);
+    }
+}
