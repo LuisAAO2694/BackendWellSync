@@ -10,6 +10,7 @@ export function createApp() {
 
     app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
     app.use(express.json());
+    app.use('/uploads', express.static('uploads'));
     app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs));
     app.use(routes);
     app.use(errorHandler);
