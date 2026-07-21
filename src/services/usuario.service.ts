@@ -5,6 +5,13 @@ import { AppError } from '../utils/utils';
 import { HttpStatus } from '../types/http-status';
 import crypto from 'crypto'; //Operacion criptografica
 import { emailService } from './email.service';
+import { verifyGoogleToken } from '../config/google';
+import cloudinary from '../config/cloudinary';
+
+function extractPublicIdFromUrl(url: string): string | null {
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
+    return match ? match[1] : null;
+}
 
 //Aqui manejamos el servicio que se encarga de gestinar las operaciones CRUD
 //Es el intermediario entre los controladores y los models osea | [CONTROLADORES] ---> [SERVICES] ---> [MODELS] |
@@ -133,5 +140,75 @@ export const usuarioService = {
         await usuario.save();
 
         return { message: 'Contraseña actualizada correctamente' };
+    },
+
+    //Aqui solo es mi inicio de sesion con google
+    async googleLogin(idToken: string): Promise<{ token: string }> {
+        //Checo que el idtoken de google sea valido y obtengo la info del user
+        const profile = await verifyGoogleToken(idToken);
+
+        //Busco el usuarios asociado
+        let usuario = await Usuario.findOne({ googleId: profile.googleId });
+
+        //Si no existe
+        if (!usuario) {
+            //Busco si ya existe uno registrado con el mismo correo
+            usuario = await Usuario.findOne({ email: profile.email });
+            if (usuario) {
+                //Vinculo la cuenta existente con google
+                usuario.googleId = profile.googleId;
+
+                //Actualizo la foto de perfil si es que tiene una
+                if (profile.fotoPerfil) usuario.fotoPerfil = profile.fotoPerfil;
+
+                //Guardo los cambios
+                await usuario.save();
+            } else {
+                //Si el usuario no existe, pues le creo nueva cuenta
+                usuario = await Usuario.create({
+                    nombre: profile.nombre,
+                    email: profile.email,
+                    googleId: profile.googleId,
+                    fotoPerfil: profile.fotoPerfil,
+                });
+            }
+        }
+
+        //Genera un token JWT para autenticar al usuario en la aplicacion
+        const token = jwt.sign({ id: usuario._id, rol: usuario.rol }, jwtConfig.secret, {
+            expiresIn: jwtConfig.expiresIn,
+        });
+
+        //Devuelvo el token generado
+        return { token };
+    },
+
+    //Actualiza la foto de perfil subida por multer, solo si el usuario es dueño o admin
+    async actualizarFotoPerfil(
+        id: string,
+        fotoUrl: string,
+        publicId: string,
+        usuarioId: string,
+        rol: string,
+    ): Promise<IUsuario | null> {
+        if (rol !== 'administrador' && id !== usuarioId) {
+            throw new AppError('No tienes permisos para actualizar este perfil', HttpStatus.FORBIDDEN);
+        }
+
+        const usuario = await Usuario.findById(id);
+        if (!usuario) return null;
+
+        //Borrar foto anterior de Cloudinary si existe
+        if (usuario.fotoPerfil && usuario.fotoPerfil.includes('cloudinary')) {
+            const oldPublicId = extractPublicIdFromUrl(usuario.fotoPerfil);
+            if (oldPublicId) {
+                cloudinary.uploader.destroy(oldPublicId, () => {});
+            }
+        }
+
+        usuario.fotoPerfil = fotoUrl;
+        await usuario.save();
+
+        return await Usuario.findById(usuario._id).select('-password');
     },
 };

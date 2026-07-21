@@ -122,3 +122,24 @@ export function validateResetPassword(req: Request, res: Response, next: NextFun
 
     next();
 }
+
+//Este es un middleware que checa los datos para el login por google
+export function validateGoogleLogin(req: Request, res: Response, next: NextFunction) {
+    //Arreglo donde se guardan los errores
+    const errors: string[] = [];
+
+    //Obtengo el idToken enviado en la peticion
+    const { idToken } = req.body;
+
+    //Checo que exista el idtoken, sea texto y no este vacio
+    if (!idToken || typeof idToken !== 'string' || idToken.trim().length === 0) {
+        errors.push('El idToken de Google es obligatorio');
+    }
+
+    if (errors.length > 0) {
+        res.status(HttpStatus.BAD_REQUEST).json({ errors });
+        return;
+    }
+
+    next();
+}

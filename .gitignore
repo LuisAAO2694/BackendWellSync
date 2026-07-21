@@ -6,3 +6,4 @@ seed.ts
 pnpm-lock.yaml
 .DS_Store
 *.log
+uploads/

@@ -6,6 +6,8 @@ import entrenamientosRoutes from './entrenamientos.routes';
 import logrosRoutes from './logros.routes';
 import reportesRoutes from './reportes.routes';
 import notificacionesRoutes from './notificaciones.routes';
+import ejerciciosRoutes from './ejercicios.routes';
+import caloriasRoutes from './calorias.routes';
 
 const router = Router();
 
@@ -16,5 +18,7 @@ router.use('/api/entrenamientos', entrenamientosRoutes);
 router.use('/api/logros', logrosRoutes);
 router.use('/api/reportes', reportesRoutes);
 router.use('/api/notificaciones', notificacionesRoutes);
+router.use('/api/ejercicios', ejerciciosRoutes);
+router.use('/api/calorias', caloriasRoutes);
 
 export default router;
