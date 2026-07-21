@@ -114,8 +114,10 @@ export const usuarioService = {
         //Guardo los cambios
         await usuario.save();
 
-        //Envio al user un correo con el enlace para recuperar
-        await emailService.sendResetPasswordEmail(usuario.email, rawToken);
+        //Envio al user un correo con el enlace para recuperar (no await para no bloquear)
+        emailService.sendResetPasswordEmail(usuario.email, rawToken).catch((err: Error) => {
+            console.error('Error al enviar correo de recuperación:', err.message);
+        });
         return { message: 'Si el correo existe, recibirás un enlace de recuperación' };
     },
 
