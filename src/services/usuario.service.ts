@@ -66,6 +66,11 @@ export const usuarioService = {
             throw new AppError('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
         }
 
+        //Si el usuario no tiene contrasena (ej. registro con Google), no puede usar email/password
+        if (!usuario.password) {
+            throw new AppError('Esta cuenta usa inicio de sesión con Google. Inicia sesión con Google.', HttpStatus.UNAUTHORIZED);
+        }
+
         //Aqui comparo la contrasela con la que esta en la bd
         const isPasswordValid = await usuario.comparePassword(password);
 
